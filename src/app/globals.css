@@ -5,3 +5,29 @@
   --foreground: #171717;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+
+.text-gradient {
+  font-weight: 700;
+  font-style: Bold;
+  letter-spacing: -2%;
+  background: linear-gradient(180deg, #160c0c 0%, rgba(129, 108, 108, 0.094) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: rgba(114, 10, 10, 0);
+  opacity: 0.1;
+  text-transform: uppercase;
+  width: max-content;
+  letter-spacing: -0.09em;
+}
