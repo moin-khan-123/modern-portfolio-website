@@ -9,7 +9,6 @@ const Loader = () => {
   const preloaderRef = useRef<HTMLDivElement>(null);
   const splitOverlayRef = useRef<HTMLDivElement>(null);
   const tagsOverlayRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   const isMobile = useRef(false);
 
   useEffect(() => {
@@ -24,7 +23,7 @@ const Loader = () => {
     // Utility function to split text
     const splitTextElements = (
       selector: string,
-      type = "words,chars" as any,
+      type: "words" | "chars" | "words,chars" | "chars,words" = "words,chars",
       addFirstChar = false
     ) => {
       const elements = document.querySelectorAll(selector);
@@ -36,12 +35,14 @@ const Loader = () => {
           charsClass: "char",
         });
 
-        if (type.includes("chars")) {
-          splitText.chars.forEach((char: any, index: number) => {
-            const originalText = char.textContent;
-            char.innerHTML = `<span>${originalText}</span>`;
+        if (type.includes("chars") && splitText.chars) {
+          splitText.chars.forEach((char: Element, index: number) => {
+            // Cast to HTMLElement for DOM manipulation
+            const charElement = char as HTMLElement;
+            const originalText = charElement.textContent;
+            charElement.innerHTML = `<span>${originalText}</span>`;
             if (addFirstChar && index === 0) {
-              char.classList.add("first-char");
+              charElement.classList.add("first-char");
             }
           });
         }
@@ -77,11 +78,11 @@ const Loader = () => {
 
     // Create timeline
     const tl = gsap.timeline({ defaults: { ease: "hop" } });
-    const tags = gsap.utils.toArray(".tag");
+    const tags = gsap.utils.toArray<HTMLElement>(".tag");
 
-    tags.forEach((tag: any, index: number) => {
+    tags.forEach((tag: HTMLElement, index: number) => {
       tl.to(
-        tag.querySelectorAll("p .word"),
+        tag.querySelectorAll<HTMLElement>("p .word"),
         {
           y: "0%",
           duration: 0.75,
@@ -166,9 +167,9 @@ const Loader = () => {
         5
       );
 
-    tags.forEach((tag: any, index: number) => {
+    tags.forEach((tag: HTMLElement, index: number) => {
       tl.to(
-        tag.querySelectorAll("p .word"),
+        tag.querySelectorAll<HTMLElement>("p .word"),
         {
           y: "100%",
           duration: 0.75,
@@ -180,7 +181,7 @@ const Loader = () => {
     tl.to(
       [".preloader", ".split-overlay"],
       {
-        y: (i) => (i === 0 ? "-50%" : "50%"),
+        y: (i: number) => (i === 0 ? "-50%" : "50%"),
         duration: 1,
       },
       6
@@ -243,12 +244,12 @@ const Loader = () => {
           <p className="text-4xl md:text-5xl font-semibold">2026</p>
         </div>
         <div className="tag tag-2 absolute top-[70%] left-[15%] text-gray-500 overflow-hidden">
-          <p className="text-xl md:text-2xl font-medium">Portfolio</p>
+          <p className="text-2xl md:text-3xl font-medium">Portfolio</p>
         </div>
         <div className="tag tag-3 absolute top-1/3 right-1/10 text-gray-500 overflow-hidden">
           <p className="text-3xl md:text-4xl font-semibold">Website</p>
         </div>
-         <div className="tag tag-3 absolute top-[85%] right-[60%] text-gray-500 overflow-hidden">
+        <div className="tag tag-3 absolute top-[85%] right-[20%] text-gray-500 overflow-hidden">
           <p className="text-5xl md:text-6xl font-semibold">Modern</p>
         </div>
       </div>

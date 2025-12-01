@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 import About from "./About";
 import { useEffect, useState } from "react";
 import ScrollVelocity from "./ScrollVelocity";
