@@ -206,10 +206,10 @@ const Loader = () => {
       >
         <div className="intro-title absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center">
           <h1 className="text-6xl md:text-9xl font-semibold uppercase leading-none">
-            Moin Portfolio
+            Moin&apos;s Portfolio
           </h1>
         </div>
-        <div className="outro-title absolute top-1/2 left-1/2 md:left-[calc(100%-50rem)] transform -translate-x-1/2 -translate-y-1/2">
+        <div className="outro-title absolute top-1/2 left-1/2 md:left-[calc(100%-48rem)] transform -translate-x-1/2 -translate-y-1/2">
           <h1 className="text-6xl md:text-9xl font-semibold uppercase leading-none">
             100%
           </h1>
@@ -224,10 +224,10 @@ const Loader = () => {
       >
         <div className="intro-title absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center">
           <h1 className="text-6xl md:text-9xl font-semibold uppercase leading-none">
-            Moin Portfolio
+            Moin&apos;s Portfolio
           </h1>
         </div>
-        <div className="outro-title absolute top-1/2 left-1/2 md:left-[calc(100%-50rem)] transform -translate-x-1/2 -translate-y-1/2">
+        <div className="outro-title absolute top-1/2 left-1/2 md:left-[calc(100%-48rem)] transform -translate-x-1/2 -translate-y-1/2">
           <h1 className="text-6xl md:text-9xl font-semibold uppercase leading-none">
             100%
           </h1>
@@ -247,6 +247,9 @@ const Loader = () => {
         </div>
         <div className="tag tag-3 absolute top-1/3 right-1/10 text-gray-500 overflow-hidden">
           <p className="text-3xl md:text-4xl font-semibold">Website</p>
+        </div>
+         <div className="tag tag-3 absolute top-[85%] right-[60%] text-gray-500 overflow-hidden">
+          <p className="text-5xl md:text-6xl font-semibold">Modern</p>
         </div>
       </div>
     </>
