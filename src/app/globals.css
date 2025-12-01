@@ -31,3 +31,50 @@ body {
   width: max-content;
   letter-spacing: -0.09em;
 }
+
+/* Custom styles for loader */
+.char {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.char span {
+  position: relative;
+  display: inline-block;
+  transform: translateY(-100%);
+  will-change: transform;
+}
+
+.word {
+  position: relative;
+  display: inline-block;
+  /* transform: translateY(-100%); */
+  will-change: transform;
+}
+
+.tag .word {
+  position: relative;
+  display: inline-block;
+  transform: translateY(-100%);
+  will-change: transform;
+}
+
+.intro-title .char,
+.outro-title .char {
+  margin-top: 0.75rem;
+}
+
+.card .char span {
+  position: relative;
+  display: inline-block;
+  transform: translateY(100%);
+  will-change: transform;
+}
+
+@media (max-width: 1000px) {
+  .intro-title .char,
+  .outro-title .char {
+    margin-top: 0.5rem;
+  }
+}

@@ -19,42 +19,70 @@ export default function Hero() {
 
   const scrollingText = `Moin khan Full stack developer `;
 
-  // Decide velocity / copies based on recorded window width (fallbacks provided)
-  const isMobile = windowWidth !== null ? windowWidth < 768 : false;
-  const leftRightVelocity = isMobile ? 20 : 30;
-  const leftRightNumCopies = isMobile ? 6 : 10;
+  // Speed configuration for different screen sizes (in pixels per second)
+  const speedConfig = {
+    mobile: 15,      // < 640px (phones)
+    tablet: 25,      // 640px - 1024px (tablets)
+    laptop: 35,      // 1024px - 1440px (laptops)
+    desktop: 45,     // >= 1440px (large screens)
+  };
+
+  // Number of copies for different screen sizes
+  const copiesConfig = {
+    mobile: 6,       // < 640px
+    tablet: 8,       // 640px - 1024px
+    laptop: 10,      // 1024px - 1440px
+    desktop: 12,     // >= 1440px
+  };
+
+  // Determine current screen size and get appropriate values
+  const getResponsiveValues = () => {
+    if (windowWidth === null) {
+      return { velocity: speedConfig.laptop, numCopies: copiesConfig.laptop };
+    }
+
+    if (windowWidth < 640) {
+      // Mobile
+      return { velocity: speedConfig.mobile, numCopies: copiesConfig.mobile };
+    } else if (windowWidth >= 640 && windowWidth < 1024) {
+      // Tablet
+      return { velocity: speedConfig.tablet, numCopies: copiesConfig.tablet };
+    } else if (windowWidth >= 1024 && windowWidth < 1440) {
+      // Laptop
+      return { velocity: speedConfig.laptop, numCopies: copiesConfig.laptop };
+    } else {
+      // Desktop
+      return { velocity: speedConfig.desktop, numCopies: copiesConfig.desktop };
+    }
+  };
+
+  const { velocity, numCopies } = getResponsiveValues();
 
   return (
     <div className="relative min-h-screen tracking-tighter">   
       {/* Left Sidebar - Scrolling Up */}
       <ScrollVelocity
         texts={[scrollingText]}
-        velocity={leftRightVelocity}
-        numCopies={leftRightNumCopies}
+        velocity={velocity}
+        numCopies={numCopies}
         side="left"
         parallaxClassName="z-20"
         scrollerClassName="text-[#ebebeb00] leading-none text-center whitespace-nowrap tracking-tighter text-gradient"
-        damping={80}
-        stiffness={200}
-        velocityMapping={{ input: [0, 1000], output: [0, 2] }}
       />
 
       {/* Right Sidebar - Scrolling Down */}
       <ScrollVelocity
         texts={[scrollingText]}
-        velocity={leftRightVelocity}
-        numCopies={leftRightNumCopies}
+        velocity={velocity}
+        numCopies={numCopies}
         side="right"
         parallaxClassName="z-20"
-        scrollerClassName=" text-[#ebebeb00] leading-none text-center whitespace-nowrap tracking-tight text-gradient"
-        damping={80}
-        stiffness={200}
-        velocityMapping={{ input: [0, 1000], output: [0, 2] }}
+        scrollerClassName="text-[#ebebeb00] leading-none text-center whitespace-nowrap tracking-tight text-gradient"
       />
 
       {/* Main content */}
       <div>
-
+        <About />
       </div>
     </div>
   );
