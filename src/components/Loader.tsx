@@ -9,7 +9,9 @@ const Loader = () => {
   const preloaderRef = useRef<HTMLDivElement>(null);
   const splitOverlayRef = useRef<HTMLDivElement>(null);
   const tagsOverlayRef = useRef<HTMLDivElement>(null);
-  const isMobile = useRef(false);
+  const screenSize = useRef<"phone" | "tablet" | "laptop" | "desktop">(
+    "desktop"
+  );
 
   useEffect(() => {
     gsap.registerPlugin(CustomEase, SplitText);
@@ -17,8 +19,59 @@ const Loader = () => {
     // Create custom ease
     CustomEase.create("hop", ".8, 0, .3, 1");
 
-    // Check mobile
-    isMobile.current = window.innerWidth <= 1000;
+    // Determine screen size
+    const width = window.innerWidth;
+    if (width <= 640) {
+      screenSize.current = "phone";
+    } else if (width <= 1000) {
+      screenSize.current = "tablet";
+    } else if (width <= 1400) {
+      screenSize.current = "laptop";
+    } else {
+      screenSize.current = "desktop";
+    }
+
+    // Responsive configuration
+    const config = {
+      phone: {
+        firstCharX: "5rem",
+        firstCharY: "-5rem",
+        outroCharX: "-2rem",
+        outroFontSize: "4rem",
+        firstCharAnimX: "6rem",
+        firstCharFinalX: "5rem",
+        firstCharFinalY: "-0.75rem",
+      },
+      tablet: {
+        firstCharX: "-10rem",
+        firstCharY: "-3rem",
+        outroCharX: "-4rem",
+        outroFontSize: "8rem",
+        firstCharAnimX: "12rem",
+        firstCharFinalX: "10rem",
+        firstCharFinalY: "-2rem",
+      },
+      laptop: {
+        firstCharX: "-14rem",
+        firstCharY: "-2.5rem",
+        outroCharX: "-6rem",
+        outroFontSize: "11rem",
+        firstCharAnimX: "17rem",
+        firstCharFinalX: "14rem",
+        firstCharFinalY: "-2.5rem",
+      },
+      desktop: {
+        firstCharX: "-18rem",
+        firstCharY: "-2.75rem",
+        outroCharX: "-8rem",
+        outroFontSize: "14rem",
+        firstCharAnimX: "21.25rem",
+        firstCharFinalX: "18rem",
+        firstCharFinalY: "-2.75rem",
+      },
+    };
+
+    const currentConfig = config[screenSize.current];
 
     // Utility function to split text
     const splitTextElements = (
@@ -37,7 +90,6 @@ const Loader = () => {
 
         if (type.includes("chars") && splitText.chars) {
           splitText.chars.forEach((char: Element, index: number) => {
-            // Cast to HTMLElement for DOM manipulation
             const charElement = char as HTMLElement;
             const originalText = charElement.textContent;
             charElement.innerHTML = `<span>${originalText}</span>`;
@@ -64,15 +116,15 @@ const Loader = () => {
     );
 
     gsap.set(".split-overlay .intro-title .first-char", {
-      x: isMobile.current ? "7.5rem" : "-18rem",
-      y: isMobile.current ? "-7.5rem" : "-2.75rem",
+      x: currentConfig.firstCharX,
+      y: currentConfig.firstCharY,
       fontWeight: "900",
       scale: 0.75,
     });
 
     gsap.set(".split-overlay .outro-title .char", {
-      x: isMobile.current ? "-3rem" : "-8rem",
-      fontSize: isMobile.current ? "6rem" : "14rem",
+      x: currentConfig.outroCharX,
+      fontSize: currentConfig.outroFontSize,
       fontWeight: "500",
     });
 
@@ -121,22 +173,22 @@ const Loader = () => {
       .to(
         ".preloader .intro-title .first-char",
         {
-          x: isMobile.current ? "9rem" : "21.25rem",
+          x: currentConfig.firstCharAnimX,
         },
         3.5
       )
       .to(
         ".preloader .outro-title .char",
         {
-          x: isMobile.current ? "-3rem" : "-8rem",
+          x: currentConfig.outroCharX,
         },
         3.5
       )
       .to(
         ".preloader .intro-title .first-char",
         {
-          x: isMobile.current ? "7.5rem" : "18rem",
-          y: isMobile.current ? "-1rem" : "-2.75rem",
+          x: currentConfig.firstCharFinalX,
+          y: currentConfig.firstCharFinalY,
           fontWeight: "900",
           scale: 0.75,
           duration: 0.75,
@@ -146,8 +198,8 @@ const Loader = () => {
       .to(
         ".preloader .outro-title .char",
         {
-          x: isMobile.current ? "-3rem" : "-8rem",
-          fontSize: isMobile.current ? "6rem" : "14rem",
+          x: currentConfig.outroCharX,
+          fontSize: currentConfig.outroFontSize,
           fontWeight: "500",
           duration: 0.75,
           onComplete: () => {
@@ -205,13 +257,13 @@ const Loader = () => {
         className="preloader fixed w-screen h-svh bg-black text-gray-100 z-50"
         style={{ clipPath: "polygon(0 0, 100% 0, 100% 100%, 0% 100%)" }}
       >
-        <div className="intro-title absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center">
-          <h1 className="text-6xl md:text-9xl font-semibold uppercase leading-none">
+        <div className="intro-title absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center px-4">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-semibold uppercase leading-none">
             Moin&apos;s Portfolio
           </h1>
         </div>
-        <div className="outro-title absolute top-1/2 left-1/2 md:left-[calc(100%-48rem)] transform -translate-x-1/2 -translate-y-1/2">
-          <h1 className="text-6xl md:text-9xl font-semibold uppercase leading-none">
+        <div className="outro-title absolute top-1/2 left-1/2 sm:left-[calc(100%-20rem)] md:left-[calc(100%-32rem)] lg:left-[calc(100%-44rem)] xl:left-[calc(100%-48rem)] transform -translate-x-1/2 -translate-y-1/2">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-semibold uppercase leading-none">
             100%
           </h1>
         </div>
@@ -223,13 +275,13 @@ const Loader = () => {
         className="split-overlay fixed w-screen h-svh bg-black text-gray-100 z-40"
         style={{ clipPath: "polygon(0 0, 100% 0, 100% 100%, 0% 100%)" }}
       >
-        <div className="intro-title absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center">
-          <h1 className="text-6xl md:text-9xl font-semibold uppercase leading-none">
+        <div className="intro-title absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center px-4">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-semibold uppercase leading-none">
             Moin&apos;s Portfolio
           </h1>
         </div>
-        <div className="outro-title absolute top-1/2 left-1/2 md:left-[calc(100%-48rem)] transform -translate-x-1/2 -translate-y-1/2">
-          <h1 className="text-6xl md:text-9xl font-semibold uppercase leading-none">
+        <div className="outro-title absolute top-1/2 left-1/2 sm:left-[calc(100%-20rem)] md:left-[calc(100%-32rem)] lg:left-[calc(100%-44rem)] xl:left-[calc(100%-48rem)] transform -translate-x-1/2 -translate-y-1/2">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-semibold uppercase leading-none">
             100%
           </h1>
         </div>
@@ -240,17 +292,25 @@ const Loader = () => {
         ref={tagsOverlayRef}
         className="tags-overlay fixed w-screen h-svh z-50 pointer-events-none"
       >
-        <div className="tag tag-1 absolute top-1/5 left-1/10 text-gray-500 overflow-hidden">
-          <p className="text-4xl md:text-5xl font-semibold">2026</p>
+        <div className="tag tag-1 absolute top-1/5 left-[8%] sm:left-1/10 text-gray-500 overflow-hidden">
+          <p className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.75rem] xl:text-5xl font-semibold">
+            2026
+          </p>
         </div>
-        <div className="tag tag-2 absolute top-[70%] left-[15%] text-gray-500 overflow-hidden">
-          <p className="text-2xl md:text-3xl font-medium">Portfolio</p>
+        <div className="tag tag-2 absolute top-[70%] left-[12%] sm:left-[15%] text-gray-500 overflow-hidden">
+          <p className="text-lg sm:text-xl md:text-2xl lg:text-[1.65rem] xl:text-3xl font-medium">
+            Portfolio
+          </p>
         </div>
-        <div className="tag tag-3 absolute top-1/3 right-1/10 text-gray-500 overflow-hidden">
-          <p className="text-3xl md:text-4xl font-semibold">Website</p>
+        <div className="tag tag-3 absolute top-1/3 right-[8%] sm:right-1/10 text-gray-500 overflow-hidden">
+          <p className="text-xl sm:text-2xl md:text-3xl lg:text-[2.25rem] xl:text-4xl font-semibold">
+            Website
+          </p>
         </div>
-        <div className="tag tag-3 absolute top-[85%] right-[20%] text-gray-500 overflow-hidden">
-          <p className="text-5xl md:text-6xl font-semibold">Modern</p>
+        <div className="tag tag-4 absolute top-[85%] right-[18%] sm:right-[20%] text-gray-500 overflow-hidden">
+          <p className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] xl:text-6xl font-semibold">
+            Modern
+          </p>
         </div>
       </div>
     </>
