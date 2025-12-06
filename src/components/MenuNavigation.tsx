@@ -283,13 +283,13 @@ export default function MenuNavigation() {
       >
         {/* Navigation Bar */}
         <nav
-          className="fixed bg-amber-400 h-auto flex justify-between items-center z-98"
+          className="fixed  bg-amber-400 h-auto flex justify-between items-center z-98 "
           style={{
             top: "1rem",
-            left: "1rem",
-            right: "1rem",
+            left: "2rem",
+            right: "2rem",
             padding: "1rem 2rem 1rem 2rem",
-            borderRadius: "8px",
+            borderRadius: "15px",
           }}
         >
           <div
@@ -329,7 +329,7 @@ export default function MenuNavigation() {
           }}
         >
           <div
-            className={`w-full h-full bg-black text-white rounded-[20px] p-8 flex overflow-hidden transition-all duration-500 ${
+            className={`w-full h-full bg-black text-white rounded-[15px] p-8 flex overflow-hidden transition-all duration-500 ${
               isMenuActive
                 ? "translate-x-0 opacity-100"
                 : "-translate-x-5 opacity-0"
@@ -374,10 +374,10 @@ export default function MenuNavigation() {
                       style={{
                         transition:
                           "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                        marginTop: index === 0 ? "60px" : "0",
+                        marginTop: index === 0 ? "60px" : "5px", // Changed from "0" to "10px"
                         marginBottom:
-                          index === menuItems.length - 1 ? "0" : "10px",
-                          marginLeft:"20px"
+                          index === menuItems.length - 1 ? "0" : "0", // Removed bottom margin, spacing comes from marginTop
+                        marginLeft: "20px",
                       }}
                     >
                       <div className="relative">
@@ -392,6 +392,7 @@ export default function MenuNavigation() {
                               "polygon(0 0, 100% 0, 100% 80%, 95% 100%, 0 100%)",
                             transition:
                               "width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s",
+                            pointerEvents: "none",
                           }}
                         />
                         <a
@@ -399,17 +400,15 @@ export default function MenuNavigation() {
                             menuLinkRefs.current[index] = el;
                           }}
                           href="#"
-                          className={`relative no-underline text-white text-[48px] tracking-[-2px] font-bold pl-2.5 z-2 transition-all duration-300 group-hover:text-black group-hover:tracking-[-1.5px] ${
+                          className={`relative no-underline  uppercase text-white text-[48px] tracking-[-2px] font-bold pl-2.5 z-2 transition-all duration-300 group-hover:text-black group-hover:tracking-[-1.5px] ${
                             item.active ? "text-black!" : ""
                           }`}
                           style={{
                             transition:
                               "color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), letter-spacing 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                            lineHeight: "1.2",
-                            // Add padding to all items except first
-                            paddingTop: index === 0 ? "0" : "10px",
-                            paddingBottom: index === 0 ? "0" : "10px",
+                            lineHeight: "1.2", // Reduced from 1.2 to 1 for tighter line height
                             paddingLeft: "20px",
+                            display: "block",
                           }}
                         >
                           {item.label}
