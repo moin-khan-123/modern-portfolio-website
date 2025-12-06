@@ -368,19 +368,23 @@ export default function MenuNavigation() {
                       ref={(el) => {
                         menuItemsRef.current[index] = el;
                       }}
-                      className={`relative py-2 opacity-0 -translate-x-[50px] transition-all duration-400 group ${
+                      className={`relative opacity-0 -translate-x-[50px] transition-all duration-400 group ${
                         item.active ? "menu-item-active" : ""
                       }`}
                       style={{
                         transition:
                           "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                        marginTop: index === 0 ? "60px" : "0",
+                        marginBottom:
+                          index === menuItems.length - 1 ? "0" : "10px",
+                          marginLeft:"20px"
                       }}
                     >
                       <div className="relative">
                         <div
-                          className={`absolute top-0 left-0 h-full w-0 bg-white opacity-0 z-0 transition-all duration-400 group-hover:w-[calc(100%)] group-hover:opacity-100 ${
+                          className={`absolute top-0 left-0 h-full w-0 bg-white opacity-0 z-0 transition-all duration-400 group-hover:w-[calc(90%)] group-hover:opacity-100 ${
                             item.active
-                              ? "bg-amber-400! w-[calc(100%)]! opacity-100!"
+                              ? "bg-amber-400! w-[calc(90%)]! opacity-100!"
                               : ""
                           }`}
                           style={{
@@ -401,8 +405,11 @@ export default function MenuNavigation() {
                           style={{
                             transition:
                               "color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), letter-spacing 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                            lineHeight: "1.2", // Tighter line height
-                            padding: "10px 0",
+                            lineHeight: "1.2",
+                            // Add padding to all items except first
+                            paddingTop: index === 0 ? "0" : "10px",
+                            paddingBottom: index === 0 ? "0" : "10px",
+                            paddingLeft: "20px",
                           }}
                         >
                           {item.label}
