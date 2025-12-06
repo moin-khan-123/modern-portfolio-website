@@ -1,3 +1,4 @@
+// MenuNavigation.tsx
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
@@ -16,31 +17,6 @@ export default function MenuNavigation() {
   const menuLogoRef = useRef<HTMLDivElement>(null);
   const menuLinkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const menuContentRefs = useRef<(HTMLParagraphElement | null)[]>([]);
-
-  // Cursor trail effect
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const trail = document.createElement("div");
-      trail.className = "cursor-trail-dot";
-      trail.style.cssText = `
-        position: fixed;
-        width: 6px;
-        height: 6px;
-        background: black;
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 9999;
-        left: ${e.clientX - 3}px;
-        top: ${e.clientY - 3}px;
-      `;
-      document.body.appendChild(trail);
-
-      setTimeout(() => trail.remove(), 600);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    return () => document.removeEventListener("mousemove", handleMouseMove);
-  }, []);
 
   // Handle ESC key
   useEffect(() => {
@@ -243,6 +219,7 @@ export default function MenuNavigation() {
 
   return (
     <>
+      {/* Add the cursor trail component */}
       <style jsx global>{`
         @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap");
 
@@ -299,46 +276,63 @@ export default function MenuNavigation() {
         }
       `}</style>
 
-      <nav className="fixed top-0 w-full flex justify-between items-center p-8 z-[9998]">
-        <div
-          ref={menuLogoRef}
-          className="cursor-pointer transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:translate-x-[5px]"
-          onClick={() => setIsMenuActive(true)}
+      {/* Main wrapper with margin */}
+      <div
+        className="m-8"
+        style={{ width: "calc(100% - 4rem)", height: "calc(100vh - 4rem)" }}
+      >
+        {/* Navigation Bar */}
+        <nav
+          className="fixed bg-amber-400 h-auto flex justify-between items-center z-98"
+          style={{
+            top: "1rem",
+            left: "1rem",
+            right: "1rem",
+            padding: "1rem 2rem 1rem 2rem",
+            borderRadius: "8px",
+          }}
         >
-          <IoMenuSharp className="text-[32px]" />
-        </div>
-        <p className="uppercase text-[10px] leading-[100%] cursor-pointer tracking-[3px] text-[14px]">
-          collection
-        </p>
-      </nav>
+          <div
+            ref={menuLogoRef}
+            className="p-5 cursor-pointer transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:translate-x-[5px]"
+            onClick={() => setIsMenuActive(true)}
+          >
+            <IoMenuSharp className="text-[32px]" />
+          </div>
+          <p className="uppercase leading-[100%] cursor-pointer tracking-[3px] text-[14px]">
+            collection
+          </p>
+        </nav>
 
-      {/* FIX: Added backdrop to prevent interaction issues */}
-      {isMenuActive && (
-        <div
-          className="fixed inset-0 z-[9997]"
-          onClick={() => setIsMenuActive(false)}
-          style={{ background: "transparent" }}
-        />
-      )}
+        {/* FIX: Added backdrop to prevent interaction issues */}
+        {isMenuActive && (
+          <div
+            className="fixed inset-0 z-97"
+            onClick={() => setIsMenuActive(false)}
+            style={{ background: "transparent" }}
+          />
+        )}
 
-      <div className="w-full h-full">
+        {/* Menu Panel */}
         <div
-          className={`fixed top-1/2 -translate-y-1/2 p-6 w-[45%] h-full flex justify-center items-center z-[9998] transition-all duration-600 ${
+          className={`fixed p-6 w-[45%] h-[96.5%] flex justify-center items-center z-9998 transition-all duration-600 ${
             isMenuActive
-              ? "left-0 opacity-100 visible"
+              ? "left-8 opacity-100 visible"
               : "-left-1/2 opacity-0 invisible"
           }`}
           style={{
+            top: "50%",
+            transform: "translateY(-50%)",
             transition: isMenuActive
               ? "left 0.6s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) 0.2s, visibility 0s linear 0s"
               : "left 0.6s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), visibility 0s linear 0.6s",
           }}
         >
           <div
-            className={`w-full h-full bg-black text-white rounded-[20px] flex overflow-hidden transition-all duration-500 ${
+            className={`w-full h-full bg-black text-white rounded-[20px] p-8 flex overflow-hidden transition-all duration-500 ${
               isMenuActive
                 ? "translate-x-0 opacity-100"
-                : "-translate-x-[20px] opacity-0"
+                : "-translate-x-5 opacity-0"
             }`}
             style={{
               transition:
@@ -346,14 +340,17 @@ export default function MenuNavigation() {
             }}
           >
             {/* Menu Main */}
-            <div className="flex-[5] flex flex-col justify-between border border-white/[0.125]">
+            <div className="flex-5  flex flex-col justify-between border border-white/12.5">
               {/* Menu Top */}
-              <div className="flex border-t border-white/[0.125]">
+              <div
+                className="flex border-t border-white/12.5"
+                style={{ padding: " 1rem 2rem " }}
+              >
                 <div
                   className={`flex-1 p-8 transition-all duration-500 ${
                     isMenuActive
                       ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-[20px]"
+                      : "opacity-0 translate-y-5"
                   }`}
                   style={{
                     transition:
@@ -364,14 +361,14 @@ export default function MenuNavigation() {
                     discover
                   </p>
                 </div>
-                <div className="flex-[4] flex flex-col pt-[100px]">
+                <div className="flex-4 flex flex-col">
                   {menuItems.map((item, index) => (
                     <div
                       key={index}
                       ref={(el) => {
                         menuItemsRef.current[index] = el;
                       }}
-                      className={`relative py-2 opacity-0 -translate-x-[30px] transition-all duration-400 group ${
+                      className={`relative py-2 opacity-0 -translate-x-[50px] transition-all duration-400 group ${
                         item.active ? "menu-item-active" : ""
                       }`}
                       style={{
@@ -381,9 +378,9 @@ export default function MenuNavigation() {
                     >
                       <div className="relative">
                         <div
-                          className={`absolute top-0 left-0 h-full w-0 bg-white opacity-0 z-0 transition-all duration-400 group-hover:w-[calc(100%+30px)] group-hover:opacity-100 ${
+                          className={`absolute top-0 left-0 h-full w-0 bg-white opacity-0 z-0 transition-all duration-400 group-hover:w-[calc(100%)] group-hover:opacity-100 ${
                             item.active
-                              ? "!bg-[aquamarine] !w-[calc(100%+30px)] !opacity-100"
+                              ? "bg-amber-400! w-[calc(100%)]! opacity-100!"
                               : ""
                           }`}
                           style={{
@@ -398,12 +395,14 @@ export default function MenuNavigation() {
                             menuLinkRefs.current[index] = el;
                           }}
                           href="#"
-                          className={`relative no-underline text-white text-[48px] tracking-[-2px] font-bold pl-[10px] z-[2] transition-all duration-300 group-hover:text-black group-hover:tracking-[-1.5px] ${
-                            item.active ? "!text-black" : ""
+                          className={`relative no-underline text-white text-[48px] tracking-[-2px] font-bold pl-2.5 z-2 transition-all duration-300 group-hover:text-black group-hover:tracking-[-1.5px] ${
+                            item.active ? "text-black!" : ""
                           }`}
                           style={{
                             transition:
                               "color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), letter-spacing 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                            lineHeight: "1.2", // Tighter line height
+                            padding: "10px 0",
                           }}
                         >
                           {item.label}
@@ -423,10 +422,10 @@ export default function MenuNavigation() {
                 ].map((subItem, index) => (
                   <div
                     key={index}
-                    className={`w-full flex gap-4 border-t border-white/[0.125] p-4 px-8 transition-all duration-400 ${
+                    className={`w-full flex gap-4 border-t border-white/12.5 p-4 px-8 transition-all duration-400 ${
                       isMenuActive
                         ? "opacity-100 translate-y-0"
-                        : "opacity-0 translate-y-[20px]"
+                        : "opacity-0 translate-y-5"
                     }`}
                     style={{
                       transition:
@@ -437,16 +436,20 @@ export default function MenuNavigation() {
                     }}
                   >
                     <div className="flex-1">
-                      <p className="text-[14px] tracking-[3px] uppercase">
+                      <p
+                        className="text-[14px] tracking-[3px] uppercase"
+                        style={{ padding: " .3rem 2rem " }}
+                      >
                         {subItem.title}
                       </p>
                     </div>
-                    <div className="flex-[4] pl-8">
+                    <div className="flex-4 pl-8">
                       <p
                         ref={(el) => {
                           menuContentRefs.current[index] = el;
                         }}
-                        className="relative w-max p-[2px] text-[14px] tracking-[3px] uppercase transition-transform duration-300 hover:translate-x-[5px] after:content-[''] after:absolute after:top-0 after:left-0 after:w-0 after:h-full after:bg-white after:mix-blend-difference hover:after:w-full after:transition-all after:duration-600"
+                        style={{ padding: " .3rem .8rem " }}
+                        className="relative w-max  text-[14px] tracking-[3px] uppercase transition-transform duration-300 after:content-[''] after:absolute after:top-0 after:left-0 after:w-0 after:h-full after:bg-white after:mix-blend-difference hover:after:w-full after:transition-all after:duration-600"
                       >
                         {subItem.content}
                       </p>
@@ -457,13 +460,16 @@ export default function MenuNavigation() {
             </div>
 
             {/* Menu Sidebar */}
-            <div className="flex-[0.2] flex flex-col justify-between">
+            <div
+              className="flex-[0.2] flex flex-col justify-between"
+              style={{ padding: "1rem" }}
+            >
               <div
-                className="p-6 border-b border-white/[0.125] cursor-pointer flex justify-center items-center transition-all duration-400 relative overflow-hidden group hover:bg-white/[0.05] before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:w-0 before:h-0 before:bg-white/[0.1] before:rounded-full before:-translate-x-1/2 before:-translate-y-1/2 hover:before:w-[200%] hover:before:h-[200%] before:transition-all before:duration-600"
+                className=" cursor-pointer flex justify-center items-center transition-all duration-400 relative overflow-hidden group before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:w-0 before:h-0  before:rounded-full before:-translate-x-1/2 before:-translate-y-1/2 hover:before:w-[200%] hover:before:h-[200%] before:transition-all before:duration-600"
                 onClick={() => setIsMenuActive(false)}
               >
                 <IoCloseSharp
-                  className={`text-[32px] transition-all duration-500 relative z-[1] group-hover:rotate-90 group-hover:scale-110 group-hover:text-white group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)] ${
+                  className={`text-[40px] transition-all duration-400 relative z-1 group-hover:rotate-90 group-hover:scale-110 group-hover:text-amber-400 group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)] ${
                     isMenuActive ? "pulse-glow-animation" : ""
                   }`}
                   style={{
@@ -477,14 +483,14 @@ export default function MenuNavigation() {
                 className={`p-6 transition-all duration-400 ${
                   isMenuActive
                     ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-[20px]"
+                    : "opacity-0 translate-y-5"
                 }`}
                 style={{
                   transition:
                     "transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) 0.7s, opacity 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) 0.7s",
                 }}
               >
-                <IoFunnelSharp className="text-[24px] transition-transform duration-300 hover:rotate-[15deg] hover:scale-110" />
+                <IoFunnelSharp className="text-[24px] transition-transform duration-300 hover:rotate-15 hover:scale-110" />
               </div>
             </div>
           </div>
