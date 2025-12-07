@@ -339,7 +339,7 @@ export default function MenuNavigation() {
         @media (max-width: 550px) {
           .menu-panel {
             width: 92% !important;
-            height: 97% !important;
+            Height: 97% !important;
             left: 50% !important;
             transform: translate(-50%, -50%) !important;
           }
@@ -412,8 +412,8 @@ export default function MenuNavigation() {
             margin-top: 5rem !important;
           }
 
-          .site-bar {
-            padding: 0.5rem !important;
+          .site-bar{
+           padding: .5rem !important;
           }
 
           /* Adjust menu item spacing for mobile */
@@ -446,7 +446,7 @@ export default function MenuNavigation() {
 
           .menu-content {
             padding: 0.2rem 0.5rem !important;
-            letter-spacing: 2px !important;
+              letter-spacing: 2px !important;
           }
 
           /* Adjust active background for mobile */
@@ -461,7 +461,7 @@ export default function MenuNavigation() {
             font-size: 26px !important;
           }
 
-          .menu-bottom-text {
+            .menu-bottom-text {
             margin-top: 3.8rem !important;
           }
 
@@ -510,7 +510,7 @@ export default function MenuNavigation() {
       >
         {/* Navigation Bar */}
         <nav
-          className="fixed bg-amber-400 h-auto flex justify-between items-center z-98"
+          className="fixed bg-amber-400 h-auto flex justify-between items-center z-28"
           style={{
             top: "1rem",
             left: "2rem",
@@ -534,7 +534,7 @@ export default function MenuNavigation() {
         {/* FIX: Added backdrop to prevent interaction issues */}
         {isMenuActive && (
           <div
-            className="fixed inset-0 z-97"
+            className="fixed inset-0 z-27"
             onClick={() => setIsMenuActive(false)}
             style={{ background: "transparent" }}
           />
@@ -542,7 +542,7 @@ export default function MenuNavigation() {
 
         {/* Menu Panel */}
         <div
-          className={`menu-panel fixed p-6 w-[45%] h-[96.5%] flex justify-center items-center z-9998 transition-all duration-600 ${
+          className={`menu-panel fixed p-6 w-[45%] h-[96.5%] flex justify-center items-center z-28 transition-all duration-600 ${
             isMenuActive
               ? "left-8 opacity-100 visible"
               : "-left-1/2 opacity-0 invisible"
