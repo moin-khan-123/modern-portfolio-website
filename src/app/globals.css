@@ -1,9 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap");
 @import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
 
 * {
   margin: 0;
@@ -11,18 +7,24 @@
   box-sizing: border-box;
 }
 
+html,
 body {
-  font-family: 'Inter', sans-serif;
-  background-color: var(--background);
-  color: var(--foreground);
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: "Roboto Mono", monospace;
+  background-color: #f4f4f4;
 }
-
 
 .text-gradient {
   font-weight: 700;
   font-style: Bold;
   letter-spacing: -2%;
-  background: linear-gradient(180deg, #160c0c 0%, rgba(129, 108, 108, 0.094) 100%);
+  background: linear-gradient(
+    180deg,
+    #160c0c 0%,
+    rgba(129, 108, 108, 0.094) 100%
+  );
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: rgba(114, 10, 10, 0);

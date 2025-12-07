@@ -12,7 +12,7 @@ export default function CursorTrail() {
         position: fixed;
         width: 6px;
         height: 6px;
-        background: black;
+        background: #ffb900;
         border-radius: 50%;
         pointer-events: none;
         z-index: 9999;

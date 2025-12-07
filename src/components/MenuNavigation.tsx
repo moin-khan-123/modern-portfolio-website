@@ -1,15 +1,54 @@
-// MenuNavigation.tsx
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { IoMenuSharp, IoCloseSharp, IoFunnelSharp } from "react-icons/io5";
 
-// Interface for shuffle element with custom properties
 interface ShuffleElement extends HTMLElement {
   _shuffleTimeout?: NodeJS.Timeout;
   _shuffleInterval?: NodeJS.Timeout;
   _shuffleHandler?: (event: MouseEvent) => void;
 }
+
+interface MenuItem {
+  label: string;
+  active: boolean;
+}
+
+interface BottomMenuItem {
+  title: string;
+  content: string;
+}
+
+const MENU_ITEMS: MenuItem[] = [
+  { label: "Story", active: false },
+  { label: "protocol", active: false },
+  { label: "journal", active: false },
+  { label: "Contact", active: false },
+  { label: "Gallery", active: true },
+  { label: "About", active: false },
+];
+
+const BOTTOM_MENU_ITEMS: BottomMenuItem[] = [
+  { title: "connect", content: "discord" },
+  { title: "Buy On", content: "Opensea" },
+  { title: "US-EN", content: "2024" },
+];
+
+const ANIMATION_CONFIG = {
+  menuItemDelay: 100,
+  menuItemStagger: 80,
+  menuItemExitStagger: 30,
+  shuffleInterval: 15,
+  resetDelay: 100,
+  additionalDelay: 50,
+  setupDelay: 500,
+};
+
+const TRANSITION_TIMINGS = {
+  cubic: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+  easeOutQuart: "cubic-bezier(0.165, 0.84, 0.44, 1)",
+  bouncy: "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+};
 
 export default function MenuNavigation() {
   const [isMenuActive, setIsMenuActive] = useState(false);
@@ -18,70 +57,65 @@ export default function MenuNavigation() {
   const menuLinkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const menuContentRefs = useRef<(HTMLParagraphElement | null)[]>([]);
 
-  // Handle ESC key
+  const closeMenu = useCallback(() => setIsMenuActive(false), []);
+  const openMenu = useCallback(() => setIsMenuActive(true), []);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isMenuActive) {
-        setIsMenuActive(false);
+        closeMenu();
       }
     };
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isMenuActive]);
+  }, [isMenuActive, closeMenu]);
 
-  // Animate menu items
   useEffect(() => {
-    if (isMenuActive) {
+    const animateMenuItems = () => {
       menuItemsRef.current.forEach((item, index) => {
-        if (item) {
-          setTimeout(() => {
-            item.style.transform = "translateX(0)";
-            item.style.opacity = "1";
-          }, 100 + index * 80);
-        }
+        if (!item) return;
+
+        const delay = isMenuActive
+          ? ANIMATION_CONFIG.menuItemDelay +
+            index * ANIMATION_CONFIG.menuItemStagger
+          : index * ANIMATION_CONFIG.menuItemExitStagger;
+
+        setTimeout(() => {
+          item.style.transform = isMenuActive
+            ? "translateX(0)"
+            : "translateX(-30px)";
+          item.style.opacity = isMenuActive ? "1" : "0";
+        }, delay);
       });
-    } else {
-      menuItemsRef.current.forEach((item, index) => {
-        if (item) {
-          setTimeout(() => {
-            item.style.transform = "translateX(-30px)";
-            item.style.opacity = "0";
-          }, index * 30);
-        }
-      });
-    }
+    };
+
+    animateMenuItems();
   }, [isMenuActive]);
 
-  // Fix: Ensure menu logo stays above everything when menu is open
   useEffect(() => {
     if (menuLogoRef.current) {
-      if (isMenuActive) {
-        menuLogoRef.current.style.zIndex = "9999";
-      } else {
-        menuLogoRef.current.style.zIndex = "";
-      }
+      menuLogoRef.current.style.zIndex = isMenuActive ? "9999" : "";
     }
   }, [isMenuActive]);
 
-  // Character shuffle effect (from original code)
-  const addShuffleEffect = (element: HTMLElement) => {
-    const text = element.textContent || "";
-    const chars = Array.from(text);
+  const createCharacterSpans = (element: HTMLElement, text: string): void => {
+    if (element.querySelector(".char")) return;
 
-    // Create character elements if not exists
-    if (!element.querySelector(".char")) {
-      element.innerHTML = "";
-      chars.forEach((char, _index) => {
-        const span = document.createElement("span");
-        span.className = "char";
-        span.textContent = char;
-        span.style.display = "inline-block";
-        span.style.transition =
-          "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)";
-        element.appendChild(span);
-      });
-    }
+    element.innerHTML = "";
+    text.split("").forEach((char) => {
+      const span = document.createElement("span");
+      span.className = "char";
+      span.textContent = char;
+      span.style.display = "inline-block";
+      span.style.transition = `transform 0.3s ${TRANSITION_TIMINGS.cubic}, color 0.3s ${TRANSITION_TIMINGS.cubic}`;
+      element.appendChild(span);
+    });
+  };
+
+  const addShuffleEffect = useCallback((element: HTMLElement) => {
+    const text = element.textContent || "";
+    createCharacterSpans(element, text);
 
     const charElements = element.querySelectorAll(".char");
     if (!charElements.length) return;
@@ -89,9 +123,6 @@ export default function MenuNavigation() {
     const originalText = Array.from(charElements).map(
       (char: Element) => char.textContent || ""
     );
-    const shuffleInterval = 15;
-    const resetDelay = 100;
-    const additionalDelay = 50;
 
     charElements.forEach((charElement: Element, index: number) => {
       const char = charElement as ShuffleElement;
@@ -105,7 +136,7 @@ export default function MenuNavigation() {
           33 + Math.floor(Math.random() * 94)
         );
         char.style.color = "#000000";
-      }, shuffleInterval);
+      }, ANIMATION_CONFIG.shuffleInterval);
 
       char._shuffleTimeout = setTimeout(() => {
         if (char._shuffleInterval) clearInterval(char._shuffleInterval);
@@ -116,127 +147,53 @@ export default function MenuNavigation() {
         setTimeout(() => {
           char.style.transform = "translateY(0)";
         }, 150);
-      }, resetDelay + index * additionalDelay);
+      }, ANIMATION_CONFIG.resetDelay + index * ANIMATION_CONFIG.additionalDelay);
     });
-  };
+  }, []);
 
-  // Setup hover effects when menu opens
+  const setupShuffleEffects = useCallback(() => {
+    const setupElement = (element: HTMLElement | null) => {
+      if (!element) return;
+
+      const text = element.textContent || "";
+      createCharacterSpans(element, text);
+
+      const handleMouseEnter = () => addShuffleEffect(element);
+      element.addEventListener("mouseenter", handleMouseEnter);
+      (element as ShuffleElement)._shuffleHandler = handleMouseEnter;
+    };
+
+    menuLinkRefs.current.forEach(setupElement);
+    menuContentRefs.current.forEach(setupElement);
+  }, [addShuffleEffect]);
+
+  const cleanupShuffleEffects = useCallback(() => {
+    const cleanup = (element: HTMLElement | null) => {
+      const shuffleElement = element as ShuffleElement;
+      if (shuffleElement?._shuffleHandler) {
+        shuffleElement.removeEventListener(
+          "mouseenter",
+          shuffleElement._shuffleHandler
+        );
+        delete shuffleElement._shuffleHandler;
+      }
+    };
+
+    menuLinkRefs.current.forEach(cleanup);
+    menuContentRefs.current.forEach(cleanup);
+  }, []);
+
   useEffect(() => {
     if (isMenuActive) {
-      // Add shuffle effect to main menu items
-      setTimeout(() => {
-        menuLinkRefs.current.forEach((link) => {
-          if (link) {
-            // Split text into characters
-            const text = link.textContent || "";
-            if (!link.querySelector(".char")) {
-              link.innerHTML = "";
-              text.split("").forEach((char, _index) => {
-                const span = document.createElement("span");
-                span.className = "char";
-                span.textContent = char;
-                span.style.display = "inline-block";
-                span.style.transition =
-                  "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)";
-                link.appendChild(span);
-              });
-            }
-
-            // Add hover event
-            const handleMouseEnter = () => {
-              addShuffleEffect(link);
-            };
-
-            link.addEventListener("mouseenter", handleMouseEnter);
-            // Store the handler for cleanup
-            (link as ShuffleElement)._shuffleHandler = handleMouseEnter;
-          }
-        });
-
-        // Add shuffle effect to bottom menu items (discord, Opensea, 2024)
-        menuContentRefs.current.forEach((content) => {
-          if (content) {
-            // Split text into characters
-            const text = content.textContent || "";
-            if (!content.querySelector(".char")) {
-              content.innerHTML = "";
-              text.split("").forEach((char, _index) => {
-                const span = document.createElement("span");
-                span.className = "char";
-                span.textContent = char;
-                span.style.display = "inline-block";
-                span.style.transition =
-                  "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)";
-                content.appendChild(span);
-              });
-            }
-
-            // Add hover event
-            const handleMouseEnter = () => {
-              addShuffleEffect(content);
-            };
-
-            content.addEventListener("mouseenter", handleMouseEnter);
-            // Store the handler for cleanup
-            (content as ShuffleElement)._shuffleHandler = handleMouseEnter;
-          }
-        });
-      }, 500);
+      setTimeout(setupShuffleEffects, ANIMATION_CONFIG.setupDelay);
     } else {
-      // Clean up event listeners
-      menuLinkRefs.current.forEach((link) => {
-        const shuffleLink = link as ShuffleElement;
-        if (shuffleLink && shuffleLink._shuffleHandler) {
-          shuffleLink.removeEventListener(
-            "mouseenter",
-            shuffleLink._shuffleHandler
-          );
-          delete shuffleLink._shuffleHandler;
-        }
-      });
-
-      menuContentRefs.current.forEach((content) => {
-        const shuffleContent = content as ShuffleElement;
-        if (shuffleContent && shuffleContent._shuffleHandler) {
-          shuffleContent.removeEventListener(
-            "mouseenter",
-            shuffleContent._shuffleHandler
-          );
-          delete shuffleContent._shuffleHandler;
-        }
-      });
+      cleanupShuffleEffects();
     }
-  }, [isMenuActive]);
-
-  const menuItems = [
-    { label: "Story", active: false },
-    { label: "protocol", active: false },
-    { label: "journal", active: false },
-    { label: "Contact", active: false },
-    { label: "Gallery", active: true },
-    { label: "About", active: false },
-  ];
+  }, [isMenuActive, setupShuffleEffects, cleanupShuffleEffects]);
 
   return (
     <>
       <style jsx global>{`
-        @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap");
-
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-        }
-
-        html,
-        body {
-          width: 100vw;
-          height: 100vh;
-          overflow: hidden;
-          font-family: "Roboto Mono", monospace;
-          background-color: #f4f4f4;
-        }
-
         .char {
           display: inline-block;
           transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -274,9 +231,6 @@ export default function MenuNavigation() {
           animation: pulse-glow 2s infinite 0.5s;
         }
 
-        /* Responsive Design */
-
-        /* Tablet (481px to 1024px) */
         @media (max-width: 1024px) and (min-width: 481px) {
           .menu-panel {
             width: 80% !important;
@@ -311,17 +265,14 @@ export default function MenuNavigation() {
             height: calc(100vh - 3rem) !important;
           }
 
-          /* Adjust padding for full width menu */
           .menu-content-container {
             padding: 1rem 1.5rem !important;
           }
 
-          /* Adjust menu item spacing */
           .menu-item-container {
             margin-left: 15px !important;
           }
 
-          /* Adjust bottom menu items */
           .bottom-menu-item {
             padding: 0.75rem 1.5rem !important;
           }
@@ -335,11 +286,10 @@ export default function MenuNavigation() {
           }
         }
 
-        /* Phone (up to 480px) */
         @media (max-width: 550px) {
           .menu-panel {
             width: 92% !important;
-            Height: 97% !important;
+            height: 97% !important;
             left: 50% !important;
             transform: translate(-50%, -50%) !important;
           }
@@ -405,32 +355,27 @@ export default function MenuNavigation() {
             font-size: 14px !important;
             padding: 0.5rem 1rem !important;
             letter-spacing: 2px !important;
-            //  margin-bottom: 1rem !important;
           }
 
           .menu-bottom-text {
             margin-top: 5rem !important;
           }
 
-          .site-bar{
-           padding: .5rem !important;
+          .site-bar {
+            padding: 0.5rem !important;
           }
 
-          /* Adjust menu item spacing for mobile */
           .menu-item-container {
             margin-top: 8px !important;
             margin-bottom: 8px !important;
             margin-left: 10px !important;
           }
 
-          /* Adjust menu item font sizes and spacing */
           .menu-item-link {
             padding-left: 10px !important;
           }
 
-          /* Adjust bottom menu items */
           .bottom-menu-item {
-            // padding: 0.5rem 1rem !important;
             gap: 4rem !important;
           }
 
@@ -446,22 +391,20 @@ export default function MenuNavigation() {
 
           .menu-content {
             padding: 0.2rem 0.5rem !important;
-              letter-spacing: 2px !important;
+            letter-spacing: 2px !important;
           }
 
-          /* Adjust active background for mobile */
           .menu-item-container .absolute {
             width: calc(95%) !important;
           }
         }
 
-        /* Very small phones */
         @media (max-width: 320px) {
           .menu-item-link {
             font-size: 26px !important;
           }
 
-            .menu-bottom-text {
+          .menu-bottom-text {
             margin-top: 3.8rem !important;
           }
 
@@ -470,7 +413,6 @@ export default function MenuNavigation() {
           }
         }
 
-        /* Landscape mode adjustments for tablets and phones */
         @media (max-height: 600px) and (max-width: 1024px) {
           .menu-panel {
             height: 98% !important;
@@ -485,30 +427,25 @@ export default function MenuNavigation() {
             margin-bottom: 4px !important;
           }
 
-          /* Reduce padding in landscape */
           .menu-content-container {
             padding: 0.5rem 1rem !important;
           }
         }
 
-        /* Fix for tablet and phone menu positioning */
         .menu-panel {
           transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
         }
 
-        /* Ensure menu doesn't overflow on small screens */
         .menu-panel > div {
           max-width: 100%;
           overflow-x: hidden;
         }
       `}</style>
 
-      {/* Main wrapper with margin */}
       <div
         className="menu-wrapper m-8"
         style={{ width: "calc(100% - 4rem)", height: "calc(100vh - 4rem)" }}
       >
-        {/* Navigation Bar */}
         <nav
           className="fixed bg-amber-400 h-auto flex justify-between items-center z-28"
           style={{
@@ -522,7 +459,11 @@ export default function MenuNavigation() {
           <div
             ref={menuLogoRef}
             className="menu-logo-icon p-5 cursor-pointer transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:translate-x-[5px]"
-            onClick={() => setIsMenuActive(true)}
+            onClick={openMenu}
+            role="button"
+            aria-label="Open menu"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === "Enter" && openMenu()}
           >
             <IoMenuSharp className="text-[32px]" />
           </div>
@@ -531,16 +472,15 @@ export default function MenuNavigation() {
           </p>
         </nav>
 
-        {/* FIX: Added backdrop to prevent interaction issues */}
         {isMenuActive && (
           <div
             className="fixed inset-0 z-27"
-            onClick={() => setIsMenuActive(false)}
+            onClick={closeMenu}
             style={{ background: "transparent" }}
+            aria-hidden="true"
           />
         )}
 
-        {/* Menu Panel */}
         <div
           className={`menu-panel fixed p-6 w-[45%] h-[96.5%] flex justify-center items-center z-28 transition-all duration-600 ${
             isMenuActive
@@ -566,12 +506,10 @@ export default function MenuNavigation() {
                 "transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)",
             }}
           >
-            {/* Menu Main */}
-            <div className=" flex-5 flex flex-col justify-between border border-white/12.5">
-              {/* Menu Top */}
+            <div className="flex-5 flex flex-col justify-between border border-white/12.5">
               <div
                 className="custom-phone-size flex border-t border-white/12.5"
-                style={{ padding: " 1rem 2rem " }}
+                style={{ padding: "1rem 2rem" }}
               >
                 <div
                   className={`flex-1 p-8 transition-all duration-500 ${
@@ -589,9 +527,9 @@ export default function MenuNavigation() {
                   </p>
                 </div>
                 <div className="menu-bottom-text flex-4 flex flex-col">
-                  {menuItems.map((item, index) => (
+                  {MENU_ITEMS.map((item, index) => (
                     <div
-                      key={index}
+                      key={item.label}
                       ref={(el) => {
                         menuItemsRef.current[index] = el;
                       }}
@@ -603,7 +541,7 @@ export default function MenuNavigation() {
                           "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
                         marginTop: index === 0 ? "60px" : "5px",
                         marginBottom:
-                          index === menuItems.length - 1 ? "0" : "0",
+                          index === MENU_ITEMS.length - 1 ? "0" : "0",
                         marginLeft: "20px",
                       }}
                     >
@@ -646,15 +584,10 @@ export default function MenuNavigation() {
                 </div>
               </div>
 
-              {/* Menu Bottom */}
               <div className="flex flex-col">
-                {[
-                  { title: "connect", content: "discord" },
-                  { title: "Buy On", content: "Opensea" },
-                  { title: "US-EN", content: "2024" },
-                ].map((subItem, index) => (
+                {BOTTOM_MENU_ITEMS.map((subItem, index) => (
                   <div
-                    key={index}
+                    key={subItem.title}
                     className={`bottom-menu-item w-full flex gap-4 border-t border-white/12.5 p-4 px-8 transition-all duration-400 ${
                       isMenuActive
                         ? "opacity-100 translate-y-0"
@@ -670,8 +603,8 @@ export default function MenuNavigation() {
                   >
                     <div className="bottom-menu-left flex-1">
                       <p
-                        className="bottom-menu-text text-[14px] tracking-[3px] uppercase  whitespace-nowrap"
-                        style={{ padding: " .3rem 2rem " }}
+                        className="bottom-menu-text text-[14px] tracking-[3px] uppercase whitespace-nowrap"
+                        style={{ padding: "0.3rem 2rem" }}
                       >
                         {subItem.title}
                       </p>
@@ -681,7 +614,7 @@ export default function MenuNavigation() {
                         ref={(el) => {
                           menuContentRefs.current[index] = el;
                         }}
-                        style={{ padding: " .3rem .8rem " }}
+                        style={{ padding: "0.3rem 0.8rem" }}
                         className="menu-content relative w-max text-[14px] tracking-[3px] uppercase transition-transform duration-300 after:content-[''] after:absolute after:top-0 after:left-0 after:w-0 after:h-full after:bg-white after:mix-blend-difference hover:after:w-full after:transition-all after:duration-600"
                       >
                         {subItem.content}
@@ -692,14 +625,17 @@ export default function MenuNavigation() {
               </div>
             </div>
 
-            {/* Menu Sidebar */}
             <div
               className="site-bar flex-[0.2] flex flex-col justify-between"
               style={{ padding: "1rem" }}
             >
               <div
                 className="cursor-pointer flex justify-center items-center transition-all duration-400 relative overflow-hidden group before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:w-0 before:h-0 before:rounded-full before:-translate-x-1/2 before:-translate-y-1/2 hover:before:w-[200%] hover:before:h-[200%] before:transition-all before:duration-600"
-                onClick={() => setIsMenuActive(false)}
+                onClick={closeMenu}
+                role="button"
+                aria-label="Close menu"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === "Enter" && closeMenu()}
               >
                 <IoCloseSharp
                   className={`menu-close-icon text-[40px] transition-all duration-400 relative z-1 group-hover:rotate-90 group-hover:scale-110 group-hover:text-amber-400 group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)] ${
@@ -723,7 +659,7 @@ export default function MenuNavigation() {
                     "transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) 0.7s, opacity 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) 0.7s",
                 }}
               >
-                <IoFunnelSharp className="text-[24px] transition-transform duration-300 hover:rotate-15 hover:scale-110" />
+                <IoFunnelSharp className="text-[24px] transition-transform duration-300 hover:rotate-15 hover:scale-110 " />
               </div>
             </div>
           </div>
