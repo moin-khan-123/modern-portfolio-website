@@ -219,7 +219,6 @@ export default function MenuNavigation() {
 
   return (
     <>
-      {/* Add the cursor trail component */}
       <style jsx global>{`
         @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap");
 
@@ -274,16 +273,233 @@ export default function MenuNavigation() {
         .pulse-glow-animation {
           animation: pulse-glow 2s infinite 0.5s;
         }
+
+        /* Responsive Design */
+
+        /* Tablet (481px to 1024px) */
+        @media (max-width: 1024px) and (min-width: 481px) {
+          .menu-panel {
+            width: 80% !important;
+            // left: 50% !important;
+            // transform: translate(-50%, -50%) !important;
+          }
+
+          .menu-panel.menu-inactive {
+            left: -50% !important;
+            transform: translate(-50%, -50%) !important;
+          }
+
+          .menu-panel.menu-active {
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+          }
+
+          .menu-item-link {
+            font-size: 40px !important;
+            letter-spacing: -1.5px !important;
+          }
+
+          .menu-item-link:hover {
+            letter-spacing: -1px !important;
+          }
+
+          nav {
+            left: 2rem !important;
+            right: 2rem !important;
+          }
+
+          .menu-wrapper {
+            width: calc(100% - 3rem) !important;
+            height: calc(100vh - 3rem) !important;
+          }
+
+          /* Adjust padding for full width menu */
+          .menu-content-container {
+            padding: 1rem 1.5rem !important;
+          }
+
+          /* Adjust menu item spacing */
+          .menu-item-container {
+            margin-left: 15px !important;
+          }
+
+          /* Adjust bottom menu items */
+          .bottom-menu-item {
+            padding: 0.75rem 1.5rem !important;
+          }
+
+          .bottom-menu-text {
+            padding: 0.25rem 1.5rem !important;
+          }
+
+          .menu-content {
+            padding: 0.25rem 0.6rem !important;
+          }
+        }
+
+        /* Phone (up to 480px) */
+        @media (max-width: 480px) {
+          .menu-panel {
+            width: 92% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+          }
+
+          .menu-panel.menu-inactive {
+            left: -50% !important;
+            transform: translate(-50%, -50%) !important;
+          }
+
+          .menu-panel.menu-active {
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+          }
+
+          .menu-item-link {
+            font-size: 32px !important;
+            letter-spacing: -1px !important;
+          }
+
+          .menu-item-link:hover {
+            letter-spacing: -0.5px !important;
+          }
+
+          nav {
+            left: 1rem !important;
+            right: 1rem !important;
+            padding: 0.75rem 1rem !important;
+            border-radius: 12px !important;
+            top: 0.75rem !important;
+          }
+
+          .menu-logo-icon {
+            font-size: 24px !important;
+            padding: 0.75rem !important;
+          }
+
+          .collection-text {
+            font-size: 12px !important;
+            letter-spacing: 2px !important;
+          }
+
+          .menu-wrapper {
+            width: calc(100% - 2rem) !important;
+            height: calc(100vh - 2rem) !important;
+          }
+
+          .menu-content-container {
+            padding: 0.75rem 1rem !important;
+          }
+
+          .custom-phone-size {
+            padding-right: 0; !important;
+          }
+
+          .bottom-menu-text {
+            font-size: 11px !important;
+            letter-spacing: 2px !important;
+          }
+
+          .menu-close-icon {
+            font-size: 30px !important;
+          }
+
+          .menu-top-text {
+            font-size: 12px !important;
+            padding: 0.5rem 1rem !important;
+          }
+
+          /* Adjust menu item spacing for mobile */
+          .menu-item-container {
+            margin-top: 8px !important;
+            margin-bottom: 8px !important;
+            margin-left: 10px !important;
+          }
+
+          /* Adjust menu item font sizes and spacing */
+          .menu-item-link {
+            padding-left: 10px !important;
+          }
+
+          /* Adjust bottom menu items */
+          .bottom-menu-item {
+            padding: 0.5rem 1rem !important;
+            flex-direction: column !important;
+            gap: 0.5rem !important;
+          }
+
+          .bottom-menu-left,
+          .bottom-menu-right {
+            width: 100% !important;
+            padding-left: 0 !important;
+          }
+
+          .bottom-menu-text {
+            padding: 0.2rem 1rem !important;
+          }
+
+          .menu-content {
+            padding: 0.2rem 0.5rem !important;
+          }
+
+          /* Adjust active background for mobile */
+          .menu-item-container .absolute {
+            width: calc(95%) !important;
+          }
+        }
+
+        /* Very small phones */
+        @media (max-width: 320px) {
+          .menu-item-link {
+            font-size: 26px !important;
+          }
+
+          .menu-panel {
+            width: 95% !important;
+          }
+        }
+
+        /* Landscape mode adjustments for tablets and phones */
+        @media (max-height: 600px) and (max-width: 1024px) {
+          .menu-panel {
+            height: 98% !important;
+          }
+
+          .menu-item-link {
+            font-size: 28px !important;
+          }
+
+          .menu-item-container {
+            margin-top: 4px !important;
+            margin-bottom: 4px !important;
+          }
+
+          /* Reduce padding in landscape */
+          .menu-content-container {
+            padding: 0.5rem 1rem !important;
+          }
+        }
+
+        /* Fix for tablet and phone menu positioning */
+        .menu-panel {
+          transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+        }
+
+        /* Ensure menu doesn't overflow on small screens */
+        .menu-panel > div {
+          max-width: 100%;
+          overflow-x: hidden;
+        }
       `}</style>
 
       {/* Main wrapper with margin */}
       <div
-        className="m-8"
+        className="menu-wrapper m-8"
         style={{ width: "calc(100% - 4rem)", height: "calc(100vh - 4rem)" }}
       >
         {/* Navigation Bar */}
         <nav
-          className="fixed  bg-amber-400 h-auto flex justify-between items-center z-98 "
+          className="fixed bg-amber-400 h-auto flex justify-between items-center z-98"
           style={{
             top: "1rem",
             left: "2rem",
@@ -294,12 +510,12 @@ export default function MenuNavigation() {
         >
           <div
             ref={menuLogoRef}
-            className="p-5 cursor-pointer transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:translate-x-[5px]"
+            className="menu-logo-icon p-5 cursor-pointer transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:translate-x-[5px]"
             onClick={() => setIsMenuActive(true)}
           >
             <IoMenuSharp className="text-[32px]" />
           </div>
-          <p className="uppercase leading-[100%] cursor-pointer tracking-[3px] text-[14px]">
+          <p className="collection-text uppercase leading-[100%] cursor-pointer tracking-[3px] text-[14px]">
             collection
           </p>
         </nav>
@@ -315,7 +531,7 @@ export default function MenuNavigation() {
 
         {/* Menu Panel */}
         <div
-          className={`fixed p-6 w-[45%] h-[96.5%] flex justify-center items-center z-9998 transition-all duration-600 ${
+          className={`menu-panel fixed p-6 w-[45%] h-[96.5%] flex justify-center items-center z-9998 transition-all duration-600 ${
             isMenuActive
               ? "left-8 opacity-100 visible"
               : "-left-1/2 opacity-0 invisible"
@@ -340,10 +556,10 @@ export default function MenuNavigation() {
             }}
           >
             {/* Menu Main */}
-            <div className="flex-5  flex flex-col justify-between border border-white/12.5">
+            <div className=" flex-5 flex flex-col justify-between border border-white/12.5">
               {/* Menu Top */}
               <div
-                className="flex border-t border-white/12.5"
+                className="custom-phone-size flex border-t border-white/12.5"
                 style={{ padding: " 1rem 2rem " }}
               >
                 <div
@@ -357,7 +573,7 @@ export default function MenuNavigation() {
                       "transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) 0.3s, opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) 0.3s",
                   }}
                 >
-                  <p className="text-[14px] tracking-[3px] uppercase">
+                  <p className="menu-top-text text-[14px] tracking-[3px] uppercase">
                     discover
                   </p>
                 </div>
@@ -368,15 +584,15 @@ export default function MenuNavigation() {
                       ref={(el) => {
                         menuItemsRef.current[index] = el;
                       }}
-                      className={`relative opacity-0 -translate-x-[50px] transition-all duration-400 group ${
+                      className={`menu-item-container relative opacity-0 -translate-x-[50px] transition-all duration-400 group ${
                         item.active ? "menu-item-active" : ""
                       }`}
                       style={{
                         transition:
                           "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                        marginTop: index === 0 ? "60px" : "5px", // Changed from "0" to "10px"
+                        marginTop: index === 0 ? "60px" : "5px",
                         marginBottom:
-                          index === menuItems.length - 1 ? "0" : "0", // Removed bottom margin, spacing comes from marginTop
+                          index === menuItems.length - 1 ? "0" : "0",
                         marginLeft: "20px",
                       }}
                     >
@@ -400,13 +616,13 @@ export default function MenuNavigation() {
                             menuLinkRefs.current[index] = el;
                           }}
                           href="#"
-                          className={`relative no-underline  uppercase text-white text-[48px] tracking-[-2px] font-bold pl-2.5 z-2 transition-all duration-300 group-hover:text-black group-hover:tracking-[-1.5px] ${
+                          className={`menu-item-link relative no-underline uppercase text-white text-[48px] tracking-[-2px] font-bold pl-2.5 z-2 transition-all duration-300 group-hover:text-black group-hover:tracking-[-1.5px] ${
                             item.active ? "text-black!" : ""
                           }`}
                           style={{
                             transition:
                               "color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), letter-spacing 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                            lineHeight: "1.2", // Reduced from 1.2 to 1 for tighter line height
+                            lineHeight: "1.2",
                             paddingLeft: "20px",
                             display: "block",
                           }}
@@ -428,7 +644,7 @@ export default function MenuNavigation() {
                 ].map((subItem, index) => (
                   <div
                     key={index}
-                    className={`w-full flex gap-4 border-t border-white/12.5 p-4 px-8 transition-all duration-400 ${
+                    className={`bottom-menu-item w-full flex gap-4 border-t border-white/12.5 p-4 px-8 transition-all duration-400 ${
                       isMenuActive
                         ? "opacity-100 translate-y-0"
                         : "opacity-0 translate-y-5"
@@ -441,21 +657,21 @@ export default function MenuNavigation() {
                         : `${index * 0.1}s`,
                     }}
                   >
-                    <div className="flex-1">
+                    <div className="bottom-menu-left flex-1">
                       <p
-                        className="text-[14px] tracking-[3px] uppercase"
+                        className="bottom-menu-text text-[14px] tracking-[3px] uppercase  whitespace-nowrap"
                         style={{ padding: " .3rem 2rem " }}
                       >
                         {subItem.title}
                       </p>
                     </div>
-                    <div className="flex-4 pl-8">
+                    <div className="bottom-menu-right flex-4 pl-8">
                       <p
                         ref={(el) => {
                           menuContentRefs.current[index] = el;
                         }}
                         style={{ padding: " .3rem .8rem " }}
-                        className="relative w-max  text-[14px] tracking-[3px] uppercase transition-transform duration-300 after:content-[''] after:absolute after:top-0 after:left-0 after:w-0 after:h-full after:bg-white after:mix-blend-difference hover:after:w-full after:transition-all after:duration-600"
+                        className="menu-content relative w-max text-[14px] tracking-[3px] uppercase transition-transform duration-300 after:content-[''] after:absolute after:top-0 after:left-0 after:w-0 after:h-full after:bg-white after:mix-blend-difference hover:after:w-full after:transition-all after:duration-600"
                       >
                         {subItem.content}
                       </p>
@@ -471,11 +687,11 @@ export default function MenuNavigation() {
               style={{ padding: "1rem" }}
             >
               <div
-                className=" cursor-pointer flex justify-center items-center transition-all duration-400 relative overflow-hidden group before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:w-0 before:h-0  before:rounded-full before:-translate-x-1/2 before:-translate-y-1/2 hover:before:w-[200%] hover:before:h-[200%] before:transition-all before:duration-600"
+                className="cursor-pointer flex justify-center items-center transition-all duration-400 relative overflow-hidden group before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:w-0 before:h-0 before:rounded-full before:-translate-x-1/2 before:-translate-y-1/2 hover:before:w-[200%] hover:before:h-[200%] before:transition-all before:duration-600"
                 onClick={() => setIsMenuActive(false)}
               >
                 <IoCloseSharp
-                  className={`text-[40px] transition-all duration-400 relative z-1 group-hover:rotate-90 group-hover:scale-110 group-hover:text-amber-400 group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)] ${
+                  className={`menu-close-icon text-[40px] transition-all duration-400 relative z-1 group-hover:rotate-90 group-hover:scale-110 group-hover:text-amber-400 group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)] ${
                     isMenuActive ? "pulse-glow-animation" : ""
                   }`}
                   style={{
@@ -502,14 +718,6 @@ export default function MenuNavigation() {
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @media (max-width: 900px) {
-          .menu-container {
-            width: 100%;
-          }
-        }
-      `}</style>
     </>
   );
 }
