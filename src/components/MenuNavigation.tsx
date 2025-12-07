@@ -280,8 +280,6 @@ export default function MenuNavigation() {
         @media (max-width: 1024px) and (min-width: 481px) {
           .menu-panel {
             width: 80% !important;
-            // left: 50% !important;
-            // transform: translate(-50%, -50%) !important;
           }
 
           .menu-panel.menu-inactive {
@@ -338,9 +336,10 @@ export default function MenuNavigation() {
         }
 
         /* Phone (up to 480px) */
-        @media (max-width: 480px) {
+        @media (max-width: 550px) {
           .menu-panel {
             width: 92% !important;
+            height: 97% !important;
             left: 50% !important;
             transform: translate(-50%, -50%) !important;
           }
@@ -367,9 +366,8 @@ export default function MenuNavigation() {
           nav {
             left: 1rem !important;
             right: 1rem !important;
-            padding: 0.75rem 1rem !important;
-            border-radius: 12px !important;
-            top: 0.75rem !important;
+            padding: 0.1rem 1rem !important;
+            border-radius: 15px !important;
           }
 
           .menu-logo-icon {
@@ -392,11 +390,10 @@ export default function MenuNavigation() {
           }
 
           .custom-phone-size {
-            padding-right: 0; !important;
+            padding: 0px !important;
           }
 
           .bottom-menu-text {
-            font-size: 11px !important;
             letter-spacing: 2px !important;
           }
 
@@ -405,8 +402,18 @@ export default function MenuNavigation() {
           }
 
           .menu-top-text {
-            font-size: 12px !important;
+            font-size: 14px !important;
             padding: 0.5rem 1rem !important;
+            letter-spacing: 2px !important;
+            //  margin-bottom: 1rem !important;
+          }
+
+          .menu-bottom-text {
+            margin-top: 5rem !important;
+          }
+
+          .site-bar {
+            padding: 0.5rem !important;
           }
 
           /* Adjust menu item spacing for mobile */
@@ -423,9 +430,8 @@ export default function MenuNavigation() {
 
           /* Adjust bottom menu items */
           .bottom-menu-item {
-            padding: 0.5rem 1rem !important;
-            flex-direction: column !important;
-            gap: 0.5rem !important;
+            // padding: 0.5rem 1rem !important;
+            gap: 4rem !important;
           }
 
           .bottom-menu-left,
@@ -440,6 +446,7 @@ export default function MenuNavigation() {
 
           .menu-content {
             padding: 0.2rem 0.5rem !important;
+            letter-spacing: 2px !important;
           }
 
           /* Adjust active background for mobile */
@@ -452,6 +459,10 @@ export default function MenuNavigation() {
         @media (max-width: 320px) {
           .menu-item-link {
             font-size: 26px !important;
+          }
+
+          .menu-bottom-text {
+            margin-top: 3.8rem !important;
           }
 
           .menu-panel {
@@ -577,7 +588,7 @@ export default function MenuNavigation() {
                     discover
                   </p>
                 </div>
-                <div className="flex-4 flex flex-col">
+                <div className="menu-bottom-text flex-4 flex flex-col">
                   {menuItems.map((item, index) => (
                     <div
                       key={index}
@@ -683,7 +694,7 @@ export default function MenuNavigation() {
 
             {/* Menu Sidebar */}
             <div
-              className="flex-[0.2] flex flex-col justify-between"
+              className="site-bar flex-[0.2] flex flex-col justify-between"
               style={{ padding: "1rem" }}
             >
               <div
