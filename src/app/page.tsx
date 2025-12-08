@@ -1,11 +1,8 @@
-import React from 'react';
-import { Layout } from '../components/layout/Layout';
-import Playground from '../components/Playground';
+// app/page.tsx - Home page
+import Playground from "../components/Playground";
 
-export default function Page() {
+export default function Home() {
   return (
-    <Layout>
-      <Playground />
-    </Layout>
+    <Playground />
   );
 }

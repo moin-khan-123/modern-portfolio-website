@@ -1,7 +1,10 @@
+// components/MenuNavigation.tsx
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { IoMenuSharp, IoCloseSharp, IoFunnelSharp } from "react-icons/io5";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface ShuffleElement extends HTMLElement {
   _shuffleTimeout?: NodeJS.Timeout;
@@ -11,7 +14,7 @@ interface ShuffleElement extends HTMLElement {
 
 interface MenuItem {
   label: string;
-  active: boolean;
+  href: string;
 }
 
 interface BottomMenuItem {
@@ -19,13 +22,14 @@ interface BottomMenuItem {
   content: string;
 }
 
+// Updated MENU_ITEMS with href paths
 const MENU_ITEMS: MenuItem[] = [
-  { label: "Story", active: false },
-  { label: "protocol", active: false },
-  { label: "journal", active: false },
-  { label: "Contact", active: false },
-  { label: "Gallery", active: true },
-  { label: "About", active: false },
+  { label: "Story", href: "/story" },
+  { label: "protocol", href: "/protocol" },
+  { label: "journal", href: "/journal" },
+  { label: "Contact", href: "/contact" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "About", href: "/about" },
 ];
 
 const BOTTOM_MENU_ITEMS: BottomMenuItem[] = [
@@ -56,9 +60,15 @@ export default function MenuNavigation() {
   const menuLogoRef = useRef<HTMLDivElement>(null);
   const menuLinkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const menuContentRefs = useRef<(HTMLParagraphElement | null)[]>([]);
+  const pathname = usePathname();
 
   const closeMenu = useCallback(() => setIsMenuActive(false), []);
   const openMenu = useCallback(() => setIsMenuActive(true), []);
+
+  // Add click handler for links to close menu
+  const handleLinkClick = useCallback(() => {
+    closeMenu();
+  }, [closeMenu]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -527,60 +537,70 @@ export default function MenuNavigation() {
                   </p>
                 </div>
                 <div className="menu-bottom-text flex-4 flex flex-col">
-                  {MENU_ITEMS.map((item, index) => (
-                    <div
-                      key={item.label}
-                      ref={(el) => {
-                        menuItemsRef.current[index] = el;
-                      }}
-                      className={`menu-item-container relative opacity-0 -translate-x-[50px] transition-all duration-400 group ${
-                        item.active ? "menu-item-active" : ""
-                      }`}
-                      style={{
-                        transition:
-                          "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                        marginTop: index === 0 ? "60px" : "5px",
-                        marginBottom:
-                          index === MENU_ITEMS.length - 1 ? "0" : "0",
-                        marginLeft: "20px",
-                      }}
-                    >
-                      <div className="relative">
-                        <div
-                          className={`absolute top-0 left-0 h-full w-0 bg-white opacity-0 z-0 transition-all duration-400 group-hover:w-[calc(90%)] group-hover:opacity-100 ${
-                            item.active
-                              ? "bg-amber-400! w-[calc(90%)]! opacity-100!"
-                              : ""
-                          }`}
-                          style={{
-                            clipPath:
-                              "polygon(0 0, 100% 0, 100% 80%, 95% 100%, 0 100%)",
-                            transition:
-                              "width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s",
-                            pointerEvents: "none",
-                          }}
-                        />
-                        <a
-                          ref={(el) => {
-                            menuLinkRefs.current[index] = el;
-                          }}
-                          href="#"
-                          className={`menu-item-link relative no-underline uppercase text-white text-[48px] tracking-[-2px] font-bold pl-2.5 z-2 transition-all duration-300 group-hover:text-black group-hover:tracking-[-1.5px] ${
-                            item.active ? "text-black!" : ""
-                          }`}
-                          style={{
-                            transition:
-                              "color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), letter-spacing 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                            lineHeight: "1.2",
-                            paddingLeft: "20px",
-                            display: "block",
-                          }}
-                        >
-                          {item.label}
-                        </a>
+                  {MENU_ITEMS.map((item, index) => {
+                    // Check if current page is this menu item's page
+                    const isActive = pathname === item.href;
+                    // Special case: If we're on home page (/), highlight Gallery
+                    const shouldHighlight =
+                      isActive ||
+                      (item.label === "Gallery" && pathname === "/");
+
+                    return (
+                      <div
+                        key={item.label}
+                        ref={(el) => {
+                          menuItemsRef.current[index] = el;
+                        }}
+                        className={`menu-item-container relative opacity-0 -translate-x-[50px] transition-all duration-400 group ${
+                          shouldHighlight ? "menu-item-active" : ""
+                        }`}
+                        style={{
+                          transition:
+                            "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                          marginTop: index === 0 ? "60px" : "5px",
+                          marginBottom:
+                            index === MENU_ITEMS.length - 1 ? "0" : "0",
+                          marginLeft: "20px",
+                        }}
+                      >
+                        <div className="relative">
+                          <div
+                            className={`absolute top-0 left-0 h-full w-0 bg-white opacity-0 z-0 transition-all duration-400 group-hover:w-[calc(90%)] group-hover:opacity-100 ${
+                              shouldHighlight
+                                ? "bg-amber-400! w-[calc(90%)]! opacity-100!"
+                                : ""
+                            }`}
+                            style={{
+                              clipPath:
+                                "polygon(0 0, 100% 0, 100% 80%, 95% 100%, 0 100%)",
+                              transition:
+                                "width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s",
+                              pointerEvents: "none",
+                            }}
+                          />
+                          <Link
+                            ref={(el) => {
+                              menuLinkRefs.current[index] = el;
+                            }}
+                            href={item.href}
+                            onClick={handleLinkClick}
+                            className={`menu-item-link relative no-underline uppercase text-white text-[48px] tracking-[-2px] font-bold pl-2.5 z-2 transition-all duration-300 group-hover:text-black group-hover:tracking-[-1.5px] ${
+                              shouldHighlight ? "text-black!" : ""
+                            }`}
+                            style={{
+                              transition:
+                                "color 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), letter-spacing 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                              lineHeight: "1.2",
+                              paddingLeft: "20px",
+                              display: "block",
+                            }}
+                          >
+                            {item.label}
+                          </Link>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 

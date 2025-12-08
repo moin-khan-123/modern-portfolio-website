@@ -1,17 +1,15 @@
-import React from 'react';
-import CursorTrail from '../CursorTrail';
-// import Navbar from '../Navbar';
+// import React from 'react';
+// import CursorTrail from '../CursorTrail';
 
-interface LayoutProps {
-  children: React.ReactNode;
-}
+// interface LayoutProps {
+//   children: React.ReactNode;
+// }
 
-export const Layout = ({ children }: LayoutProps) => {
-  return (
-    <div className="min-h-screen">
-      {/* <Navbar /> */}
-      <CursorTrail/>
-      <main className="">{children}</main>
-    </div>
-  );
-};
+// export const Layout = ({ children }: LayoutProps) => {
+//   return (
+//     <div className="min-h-screen">
+//       <CursorTrail/>
+//       <main className="">{children}</main>
+//     </div>
+//   );
+// };
