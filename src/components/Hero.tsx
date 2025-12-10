@@ -69,10 +69,10 @@ export default function Hero() {
     mobile: { width: "4rem", height: "4rem" }, // 320px - 640px
     tablet: { width: "6rem", height: "6rem" }, // 640px - 1024px
     laptop: { width: "10rem", height: "8rem" }, // 1024px - 1440px
-    desktop: { width: "13rem", height: "9rem" }, // >= 1440px
+    desktop: { width: "13rem", height: "8rem" }, // >= 1440px
   };
 
-  // Shuffle animation configuration with textAlignStart
+  // In Hero.tsx, update the shuffleConfig:
   const shuffleConfig = {
     shuffleDirection: "right" as const,
     duration: 0.35,
@@ -81,10 +81,11 @@ export default function Hero() {
     ease: "power3.out",
     stagger: 0.03,
     threshold: 0.1,
-    triggerOnce: true,
+    triggerOnce: false, // Set to false for auto-repeat
     triggerOnHover: true,
     respectReducedMotion: true,
-    textAlign: "start" as React.CSSProperties["textAlign"], // Changed to start
+    textAlign: "start" as React.CSSProperties["textAlign"],
+    autoInterval: 8, // Add this: auto-trigger every 8 seconds
   };
 
   // Determine current screen size and get all appropriate values
