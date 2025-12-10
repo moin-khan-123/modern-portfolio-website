@@ -192,11 +192,16 @@ export default function Hero() {
           style={{
             paddingLeft: paddingLeft,
             fontSize: fontSize,
-            lineHeight: 1.1,
+            lineHeight: 1, // Changed to 1 for consistent line height
+            margin: 0, // Remove default margins
+            paddingTop: 0,
+            paddingBottom: 0,
           }}
         >
           {/* First line with Shuffle */}
-          <div className="mb-2">
+          <div className="mb-0" style={{ lineHeight: 1 }}>
+            {" "}
+            {/* Changed mb-2 to mb-0 */}
             <Shuffle
               text="WE CREATE"
               {...shuffleConfig}
@@ -206,20 +211,28 @@ export default function Hero() {
                 fontFamily: "inherit",
                 lineHeight: "inherit",
                 display: "block",
-                textAlign: "start", // Added textAlign: 'start'
+                textAlign: "start",
+                margin: 0, // Add this
+                padding: 0, // Add this
               }}
-              className="font-black uppercase text-start" // Added text-start
+              className="font-black uppercase text-start leading-none" // Added leading-none
             />
           </div>
 
           {/* Second line with emoji and Shuffle */}
-          <div className="flex items-center gap-0 mb-2">
+          <div
+            className="flex items-center gap-0 mb-0"
+            style={{ lineHeight: 1 }}
+          >
+            {" "}
+            {/* Changed mb-2 to mb-0 */}
             <span
-              className="bg-amber-400 text-white mr-4 font-light flex items-center justify-center rounded-2xl text-start" // Added text-start
+              className="bg-amber-400 text-white mr-4 font-light flex items-center justify-center rounded-2xl text-start leading-none" // Added leading-none
               style={{
                 fontSize: emojiFontSize,
                 width: emojiSize.width,
                 height: emojiSize.height,
+                lineHeight: 1,
               }}
             >
               (●'◡'●)
@@ -233,14 +246,16 @@ export default function Hero() {
                 fontFamily: "inherit",
                 lineHeight: "inherit",
                 display: "inline-block",
-                textAlign: "start", // Added textAlign: 'start'
+                textAlign: "start",
+                margin: 0, // Add this
+                padding: 0, // Add this
               }}
-              className="font-black uppercase text-start" // Added text-start
+              className="font-black uppercase text-start leading-none" // Added leading-none
             />
           </div>
 
           {/* Third line with Shuffle */}
-          <div>
+          <div style={{ lineHeight: 1 }}>
             <Shuffle
               text="PRESENTATIONS"
               {...shuffleConfig}
@@ -250,9 +265,11 @@ export default function Hero() {
                 fontFamily: "inherit",
                 lineHeight: "inherit",
                 display: "block",
-                textAlign: "start", // Added textAlign: 'start'
+                textAlign: "start",
+                margin: 0, // Add this
+                padding: 0, // Add this
               }}
-              className="font-black uppercase text-start" // Added text-start
+              className="font-black uppercase text-start leading-none" // Added leading-none
             />
           </div>
         </div>

@@ -32,7 +32,7 @@ export interface ShuffleProps {
   triggerOnce?: boolean;
   respectReducedMotion?: boolean;
   triggerOnHover?: boolean;
-  autoInterval?: number; // New prop: auto-trigger interval in seconds
+  autoInterval?: number;
 }
 
 const Shuffle: React.FC<ShuffleProps> = ({
@@ -187,38 +187,76 @@ const Shuffle: React.FC<ShuffleProps> = ({
         const parent = ch.parentElement;
         if (!parent) return;
 
-        const w = ch.getBoundingClientRect().width;
-        if (!w) return;
+        // Get character dimensions
+        const originalDisplay = getComputedStyle(ch).display;
+        const originalLineHeight = getComputedStyle(ch).lineHeight;
+        const originalHeight = getComputedStyle(ch).height;
 
+        // Preserve original position and size
+        gsap.set(ch, {
+          display: "inline-block",
+          lineHeight: originalLineHeight,
+          height: originalHeight,
+        });
+
+        const rect = ch.getBoundingClientRect();
+        const w = rect.width;
+        const h = rect.height || parseInt(originalHeight) || 0;
+
+        // Create wrapper with normalized height
         const wrap = document.createElement("span");
         wrap.className =
-          "inline-block overflow-hidden align-baseline text-left";
-        Object.assign(wrap.style, { width: w + "px" });
+          "inline-block overflow-hidden align-baseline text-left leading-none";
+        Object.assign(wrap.style, {
+          width: w + "px",
+          height: h + "px",
+          lineHeight: originalLineHeight,
+          verticalAlign: "baseline",
+        });
 
         const inner = document.createElement("span");
         inner.className =
-          "inline-block whitespace-nowrap will-change-transform origin-left transform-gpu";
+          "inline-block whitespace-nowrap will-change-transform origin-left transform-gpu leading-none";
+        Object.assign(inner.style, {
+          lineHeight: originalLineHeight,
+          height: "100%",
+        });
 
         parent.insertBefore(wrap, ch);
         wrap.appendChild(inner);
 
         const firstOrig = ch.cloneNode(true) as HTMLElement;
-        firstOrig.className = "inline-block text-left";
+        firstOrig.className = "inline-block text-left leading-none";
         Object.assign(firstOrig.style, {
           width: w + "px",
           fontFamily: computedFont,
+          lineHeight: originalLineHeight,
+          height: "100%",
+          verticalAlign: "baseline",
         });
 
         ch.setAttribute("data-orig", "1");
-        ch.className = "inline-block text-left";
-        Object.assign(ch.style, { width: w + "px", fontFamily: computedFont });
+        ch.className = "inline-block text-left leading-none";
+        Object.assign(ch.style, {
+          width: w + "px",
+          fontFamily: computedFont,
+          lineHeight: originalLineHeight,
+          height: "100%",
+          verticalAlign: "baseline",
+        });
 
         inner.appendChild(firstOrig);
         for (let k = 0; k < rolls; k++) {
           const c = ch.cloneNode(true) as HTMLElement;
           if (scrambleCharset) c.textContent = rand(scrambleCharset);
-          c.className = "inline-block text-left";
-          Object.assign(c.style, { width: w + "px", fontFamily: computedFont });
+          c.className = "inline-block text-left leading-none";
+          Object.assign(c.style, {
+            width: w + "px",
+            fontFamily: computedFont,
+            lineHeight: originalLineHeight,
+            height: "100%",
+            verticalAlign: "baseline",
+          });
           inner.appendChild(c);
         }
         inner.appendChild(ch);
@@ -235,7 +273,11 @@ const Shuffle: React.FC<ShuffleProps> = ({
           finalX = 0;
         }
 
-        gsap.set(inner, { x: startX, force3D: true });
+        gsap.set(inner, {
+          x: startX,
+          force3D: true,
+          lineHeight: originalLineHeight,
+        });
         if (colorFrom) (inner.style as any).color = colorFrom;
 
         inner.setAttribute("data-final-x", String(finalX));
@@ -270,6 +312,14 @@ const Shuffle: React.FC<ShuffleProps> = ({
           '[data-orig="1"]'
         ) as HTMLElement | null;
         if (!real) return;
+
+        // Restore original display style
+        real.style.removeProperty("width");
+        real.style.removeProperty("height");
+        real.style.removeProperty("vertical-align");
+        real.classList.remove("inline-block");
+        real.classList.add("inline");
+
         strip.replaceChildren(real);
         strip.style.transform = "none";
         strip.style.willChange = "auto";
@@ -486,7 +536,7 @@ const Shuffle: React.FC<ShuffleProps> = ({
   );
 
   const baseTw =
-    "inline-block whitespace-normal break-words will-change-transform uppercase text-2xl leading-none";
+    "inline-block whitespace-normal break-words will-change-transform uppercase leading-none"; // Removed text-2xl
   const userHasFont = useMemo(
     () => className && /font[-[]/i.test(className),
     [className]
@@ -502,6 +552,9 @@ const Shuffle: React.FC<ShuffleProps> = ({
       textAlign,
       ...fallbackFont,
       ...style,
+      lineHeight: 1, // Force line height to 1
+      margin: 0, // Remove any margins
+      padding: 0, // Remove any padding
     }),
     [textAlign, fallbackFont, style]
   );
