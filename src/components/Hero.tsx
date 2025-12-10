@@ -21,42 +21,130 @@ export default function Hero() {
 
   // Speed configuration for different screen sizes (in pixels per second)
   const speedConfig = {
-    mobile: 15,      // < 640px (phones)
-    tablet: 25,      // 640px - 1024px (tablets)
-    laptop: 35,      // 1024px - 1440px (laptops)
-    desktop: 45,     // >= 1440px (large screens)
+    mobile: 15, // < 640px (phones)
+    tablet: 25, // 640px - 1024px (tablets)
+    laptop: 35, // 1024px - 1440px (laptops)
+    desktop: 45, // >= 1440px (large screens)
   };
 
   // Number of copies for different screen sizes
   const copiesConfig = {
-    mobile: 6,       // < 640px
-    tablet: 8,       // 640px - 1024px
-    laptop: 10,      // 1024px - 1440px
-    desktop: 12,     // >= 1440px
+    mobile: 6, // < 640px
+    tablet: 8, // 640px - 1024px
+    laptop: 10, // 1024px - 1440px
+    desktop: 12, // >= 1440px
   };
 
-  // Determine current screen size and get appropriate values
+  // PaddingLeft configuration for different screen sizes (in rem)
+  const paddingLeftConfig = {
+    smallPhone: "1rem", // < 320px
+    mobile: "2rem", // 320px - 640px
+    tablet: "4rem", // 640px - 1024px
+    laptop: "8rem", // 1024px - 1440px
+    desktop: "16rem", // >= 1440px
+  };
+
+  // Font size configuration for different screen sizes
+  const fontSizeConfig = {
+    smallPhone: "2.5rem", // < 320px (text-4xl)
+    mobile: "3rem", // 320px - 640px (text-5xl)
+    tablet: "4.5rem", // 640px - 1024px (text-7xl)
+    laptop: "6rem", // 1024px - 1440px (text-8xl)
+    desktop: "8rem", // >= 1440px (text-9xl)
+  };
+
+  // Emoji font size configuration
+  const emojiFontSizeConfig = {
+    smallPhone: "1.5rem", // < 320px
+    mobile: "2rem", // 320px - 640px
+    tablet: "2rem", // 640px - 1024px
+    laptop: "2rem", // 1024px - 1440px
+    desktop: "3rem", // >= 1440px
+  };
+
+  // Emoji size configuration (width & height)
+  const emojiSizeConfig = {
+    smallPhone: { width: "3rem", height: "3rem" }, // < 320px
+    mobile: { width: "4rem", height: "4rem" }, // 320px - 640px
+    tablet: { width: "6rem", height: "6rem" }, // 640px - 1024px
+    laptop: { width: "10rem", height: "8rem" }, // 1024px - 1440px
+    desktop: { width: "13rem", height: "10rem" }, // >= 1440px
+  };
+
+  // Determine current screen size and get all appropriate values
   const getResponsiveValues = () => {
     if (windowWidth === null) {
-      return { velocity: speedConfig.laptop, numCopies: copiesConfig.laptop };
+      return {
+        velocity: speedConfig.laptop,
+        numCopies: copiesConfig.laptop,
+        paddingLeft: paddingLeftConfig.laptop,
+        fontSize: fontSizeConfig.laptop,
+        emojiFontSize: emojiFontSizeConfig.laptop,
+        emojiSize: emojiSizeConfig.laptop,
+      };
     }
 
-    if (windowWidth < 640) {
+    if (windowWidth < 320) {
+      // Small phone
+      return {
+        velocity: speedConfig.mobile,
+        numCopies: copiesConfig.mobile,
+        paddingLeft: paddingLeftConfig.smallPhone,
+        fontSize: fontSizeConfig.smallPhone,
+        emojiFontSize: emojiFontSizeConfig.smallPhone,
+        emojiSize: emojiSizeConfig.smallPhone,
+      };
+    } else if (windowWidth >= 320 && windowWidth < 640) {
       // Mobile
-      return { velocity: speedConfig.mobile, numCopies: copiesConfig.mobile };
+      return {
+        velocity: speedConfig.mobile,
+        numCopies: copiesConfig.mobile,
+        paddingLeft: paddingLeftConfig.mobile,
+        fontSize: fontSizeConfig.mobile,
+        emojiFontSize: emojiFontSizeConfig.mobile,
+        emojiSize: emojiSizeConfig.mobile,
+      };
     } else if (windowWidth >= 640 && windowWidth < 1024) {
       // Tablet
-      return { velocity: speedConfig.tablet, numCopies: copiesConfig.tablet };
+      return {
+        velocity: speedConfig.tablet,
+        numCopies: copiesConfig.tablet,
+        paddingLeft: paddingLeftConfig.tablet,
+        fontSize: fontSizeConfig.tablet,
+        emojiFontSize: emojiFontSizeConfig.tablet,
+        emojiSize: emojiSizeConfig.tablet,
+      };
     } else if (windowWidth >= 1024 && windowWidth < 1440) {
       // Laptop
-      return { velocity: speedConfig.laptop, numCopies: copiesConfig.laptop };
+      return {
+        velocity: speedConfig.laptop,
+        numCopies: copiesConfig.laptop,
+        paddingLeft: paddingLeftConfig.laptop,
+        fontSize: fontSizeConfig.laptop,
+        emojiFontSize: emojiFontSizeConfig.laptop,
+        emojiSize: emojiSizeConfig.laptop,
+      };
     } else {
       // Desktop
-      return { velocity: speedConfig.desktop, numCopies: copiesConfig.desktop };
+      return {
+        velocity: speedConfig.desktop,
+        numCopies: copiesConfig.desktop,
+        paddingLeft: paddingLeftConfig.desktop,
+        fontSize: fontSizeConfig.desktop,
+        emojiFontSize: emojiFontSizeConfig.desktop,
+        emojiSize: emojiSizeConfig.desktop,
+      };
     }
   };
 
-  const { velocity, numCopies } = getResponsiveValues();
+  const {
+    velocity,
+    numCopies,
+    paddingLeft,
+    fontSize,
+    emojiFontSize,
+    emojiSize,
+  } = getResponsiveValues();
 
   return (
     <div className="relative min-h-screen tracking-tighter">
@@ -81,15 +169,27 @@ export default function Hero() {
       />
 
       {/* Main content */}
-      {/* CHANGED: Removed w-screen and added w-full */}
       <div className="h-screen w-full flex items-center">
-        {/* CHANGED: Added left margin directly to the content container */}
-        <div className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-black uppercase leading-none text-black"
-          style={{ paddingLeft: "16rem" }}
-         >
+        <div
+          className="font-black uppercase leading-none text-black"
+          style={{
+            paddingLeft: paddingLeft,
+            fontSize: fontSize,
+            lineHeight: 1.1,
+          }}
+        >
           <div className="mb-2">WE CREATE</div>
           <div className="flex items-center gap-0 mb-2">
-            <span className=" w-16 h-16 md:w-24 md:h-24 lg:w-40 lg:h-32 bg-amber-400 text-white mr-4 font-light text-4xl flex items-center justify-center rounded-2xl">(●'◡'●)</span>
+            <span
+              className="bg-amber-400 text-white mr-4 font-light flex items-center justify-center rounded-2xl"
+              style={{
+                fontSize: emojiFontSize,
+                width: emojiSize.width,
+                height: emojiSize.height,
+              }}
+            >
+              (●'◡'●)
+            </span>
             <span>EYE OPENING</span>
           </div>
           <div>PRESENTATIONS</div>

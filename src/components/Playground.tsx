@@ -16,9 +16,9 @@ const Playground: React.FC<PlaygroundProps> = ({ children }) => {
   return (
     <div className="relative min-h-screen">
       {/* Main content */}
-      <Loader />
+      {/* <Loader /> */}
       <div>
-        <CursorTrail />
+        {/* <CursorTrail /> */}
         <MenuNavigation />
         {children}
         <Hero />
