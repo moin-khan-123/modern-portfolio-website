@@ -453,8 +453,8 @@ export default function MenuNavigation() {
       `}</style>
 
       <div
-        className="menu-wrapper m-8"
-        style={{ width: "calc(100% - 4rem)", height: "calc(100vh - 4rem)" }}
+        // className="menu-wrapper m-8"
+        // style={{ width: "calc(100% - 4rem)", height: "calc(100vh - 4rem)" }}
       >
         <nav
           className="fixed bg-amber-400 h-auto flex justify-between items-center z-28"

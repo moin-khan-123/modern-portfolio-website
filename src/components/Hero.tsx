@@ -1,4 +1,4 @@
-
+// components/Hero.tsx
 import About from "./About";
 import { useEffect, useState } from "react";
 import ScrollVelocity from "./ScrollVelocity";
@@ -59,7 +59,7 @@ export default function Hero() {
   const { velocity, numCopies } = getResponsiveValues();
 
   return (
-    <div className="relative min-h-screen tracking-tighter">   
+    <div className="relative min-h-screen tracking-tighter">
       {/* Left Sidebar - Scrolling Up */}
       <ScrollVelocity
         texts={[scrollingText]}
@@ -81,8 +81,19 @@ export default function Hero() {
       />
 
       {/* Main content */}
-      <div>
-        <About />
+      {/* CHANGED: Removed w-screen and added w-full */}
+      <div className="h-screen w-full flex items-center">
+        {/* CHANGED: Added left margin directly to the content container */}
+        <div className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-black uppercase leading-none text-black"
+          style={{ paddingLeft: "16rem" }}
+         >
+          <div className="mb-2">WE CREATE</div>
+          <div className="flex items-center gap-0 mb-2">
+            <span className=" w-16 h-16 md:w-24 md:h-24 lg:w-40 lg:h-32 bg-amber-400 text-white mr-4 font-light text-4xl flex items-center justify-center rounded-2xl">(●'◡'●)</span>
+            <span>EYE OPENING</span>
+          </div>
+          <div>PRESENTATIONS</div>
+        </div>
       </div>
     </div>
   );
