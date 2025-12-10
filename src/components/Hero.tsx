@@ -2,6 +2,7 @@
 import About from "./About";
 import { useEffect, useState } from "react";
 import ScrollVelocity from "./ScrollVelocity";
+import Shuffle from "./Shuffle"; // Import the Shuffle component
 
 export default function Hero() {
   const [windowWidth, setWindowWidth] = useState<number | null>(null);
@@ -69,6 +70,21 @@ export default function Hero() {
     tablet: { width: "6rem", height: "6rem" }, // 640px - 1024px
     laptop: { width: "10rem", height: "8rem" }, // 1024px - 1440px
     desktop: { width: "13rem", height: "9rem" }, // >= 1440px
+  };
+
+  // Shuffle animation configuration with textAlignStart
+  const shuffleConfig = {
+    shuffleDirection: "right" as const,
+    duration: 0.35,
+    animationMode: "evenodd" as const,
+    shuffleTimes: 1,
+    ease: "power3.out",
+    stagger: 0.03,
+    threshold: 0.1,
+    triggerOnce: true,
+    triggerOnHover: true,
+    respectReducedMotion: true,
+    textAlign: "start" as React.CSSProperties["textAlign"], // Changed to start
   };
 
   // Determine current screen size and get all appropriate values
@@ -171,17 +187,34 @@ export default function Hero() {
       {/* Main content */}
       <div className="h-screen w-full flex items-center">
         <div
-          className="font-black uppercase leading-none text-black"
+          className="font-black uppercase leading-none text-black text-start" // Added text-start here
           style={{
             paddingLeft: paddingLeft,
             fontSize: fontSize,
             lineHeight: 1.1,
           }}
         >
-          <div className="mb-2">WE CREATE</div>
+          {/* First line with Shuffle */}
+          <div className="mb-2">
+            <Shuffle
+              text="WE CREATE"
+              {...shuffleConfig}
+              tag="div"
+              style={{
+                fontSize: "inherit",
+                fontFamily: "inherit",
+                lineHeight: "inherit",
+                display: "block",
+                textAlign: "start", // Added textAlign: 'start'
+              }}
+              className="font-black uppercase text-start" // Added text-start
+            />
+          </div>
+
+          {/* Second line with emoji and Shuffle */}
           <div className="flex items-center gap-0 mb-2">
             <span
-              className="bg-amber-400 text-white mr-4 font-light flex items-center justify-center rounded-2xl"
+              className="bg-amber-400 text-white mr-4 font-light flex items-center justify-center rounded-2xl text-start" // Added text-start
               style={{
                 fontSize: emojiFontSize,
                 width: emojiSize.width,
@@ -190,9 +223,37 @@ export default function Hero() {
             >
               (●'◡'●)
             </span>
-            <span>EYE OPENING</span>
+            <Shuffle
+              text="EYE OPENING"
+              {...shuffleConfig}
+              tag="span"
+              style={{
+                fontSize: "inherit",
+                fontFamily: "inherit",
+                lineHeight: "inherit",
+                display: "inline-block",
+                textAlign: "start", // Added textAlign: 'start'
+              }}
+              className="font-black uppercase text-start" // Added text-start
+            />
           </div>
-          <div>PRESENTATIONS</div>
+
+          {/* Third line with Shuffle */}
+          <div>
+            <Shuffle
+              text="PRESENTATIONS"
+              {...shuffleConfig}
+              tag="div"
+              style={{
+                fontSize: "inherit",
+                fontFamily: "inherit",
+                lineHeight: "inherit",
+                display: "block",
+                textAlign: "start", // Added textAlign: 'start'
+              }}
+              className="font-black uppercase text-start" // Added text-start
+            />
+          </div>
         </div>
       </div>
     </div>
