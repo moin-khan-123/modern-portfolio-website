@@ -2,7 +2,7 @@
 import About from "./About";
 import { useEffect, useState } from "react";
 import ScrollVelocity from "./ScrollVelocity";
-import Shuffle from "./Shuffle"; // Import the Shuffle component
+import Shuffle from "./Shuffle";
 
 export default function Hero() {
   const [windowWidth, setWindowWidth] = useState<number | null>(null);
@@ -38,8 +38,8 @@ export default function Hero() {
 
   // PaddingLeft configuration for different screen sizes (in rem)
   const paddingLeftConfig = {
-    smallPhone: "1rem", // < 320px
-    mobile: "2rem", // 320px - 640px
+    smallPhone: "1rem", // < 400px
+    mobile: "2rem", // 400px - 640px
     tablet: "7rem", // 640px - 1024px
     laptop: "8rem", // 1024px - 1440px
     desktop: "16rem", // >= 1440px
@@ -47,8 +47,8 @@ export default function Hero() {
 
   // Font size configuration for different screen sizes
   const fontSizeConfig = {
-    smallPhone: "2.5rem", // < 320px (text-4xl)
-    mobile: "3rem", // 320px - 640px (text-5xl)
+    smallPhone: "2.5rem", // < 400px (text-4xl)
+    mobile: "3rem", // 400px - 640px (text-5xl)
     tablet: "4.5rem", // 640px - 1024px (text-7xl)
     laptop: "6rem", // 1024px - 1440px (text-8xl)
     desktop: "8rem", // >= 1440px (text-9xl)
@@ -56,8 +56,8 @@ export default function Hero() {
 
   // Emoji font size configuration
   const emojiFontSizeConfig = {
-    smallPhone: "1.5rem", // < 320px
-    mobile: "2rem", // 320px - 640px
+    smallPhone: "1.5rem", // < 400px
+    mobile: "2rem", // 400px - 640px
     tablet: "2rem", // 640px - 1024px
     laptop: "2rem", // 1024px - 1440px
     desktop: "3rem", // >= 1440px
@@ -65,13 +65,24 @@ export default function Hero() {
 
   // Emoji size configuration (width & height)
   const emojiSizeConfig = {
-    smallPhone: { width: "3rem", height: "3rem" }, // < 320px
-    mobile: { width: "4rem", height: "4rem" }, // 320px - 640px
+    smallPhone: { width: "3rem", height: "3rem" }, // < 400px
+    mobile: { width: "4rem", height: "4rem" }, // 400px - 640px
     tablet: { width: "6rem", height: "6rem" }, // 640px - 1024px
     laptop: { width: "10rem", height: "8rem" }, // 1024px - 1440px
     desktop: { width: "13rem", height: "8rem" }, // >= 1440px
   };
 
+  const getEmojiContent = () => {
+    if (windowWidth === null) return "(●'◡'●)";
+
+    if (windowWidth < 640) {
+      return "'◡'";
+    } else if (windowWidth >= 640 && windowWidth < 1024) {
+      return "●'◡'●";
+    } else {
+      return "(●'◡'●)";
+    }
+  };
   // In Hero.tsx, update the shuffleConfig:
   const shuffleConfig = {
     shuffleDirection: "right" as const,
@@ -81,14 +92,13 @@ export default function Hero() {
     ease: "power3.out",
     stagger: 0.03,
     threshold: 0.1,
-    triggerOnce: false, // Set to false for auto-repeat
+    triggerOnce: false,
     triggerOnHover: true,
     respectReducedMotion: true,
     textAlign: "start" as React.CSSProperties["textAlign"],
-    autoInterval: 8, // Add this: auto-trigger every 8 seconds
+    autoInterval: 8,
   };
 
-  // Determine current screen size and get all appropriate values
   const getResponsiveValues = () => {
     if (windowWidth === null) {
       return {
@@ -98,11 +108,11 @@ export default function Hero() {
         fontSize: fontSizeConfig.laptop,
         emojiFontSize: emojiFontSizeConfig.laptop,
         emojiSize: emojiSizeConfig.laptop,
+        emojiContent: getEmojiContent(),
       };
     }
 
-    if (windowWidth < 320) {
-      // Small phone
+    if (windowWidth < 400) {
       return {
         velocity: speedConfig.mobile,
         numCopies: copiesConfig.mobile,
@@ -110,9 +120,9 @@ export default function Hero() {
         fontSize: fontSizeConfig.smallPhone,
         emojiFontSize: emojiFontSizeConfig.smallPhone,
         emojiSize: emojiSizeConfig.smallPhone,
+        emojiContent: getEmojiContent(),
       };
-    } else if (windowWidth >= 320 && windowWidth < 640) {
-      // Mobile
+    } else if (windowWidth >= 400 && windowWidth < 640) {
       return {
         velocity: speedConfig.mobile,
         numCopies: copiesConfig.mobile,
@@ -120,9 +130,9 @@ export default function Hero() {
         fontSize: fontSizeConfig.mobile,
         emojiFontSize: emojiFontSizeConfig.mobile,
         emojiSize: emojiSizeConfig.mobile,
+        emojiContent: getEmojiContent(),
       };
     } else if (windowWidth >= 640 && windowWidth < 1024) {
-      // Tablet
       return {
         velocity: speedConfig.tablet,
         numCopies: copiesConfig.tablet,
@@ -130,9 +140,9 @@ export default function Hero() {
         fontSize: fontSizeConfig.tablet,
         emojiFontSize: emojiFontSizeConfig.tablet,
         emojiSize: emojiSizeConfig.tablet,
+        emojiContent: getEmojiContent(),
       };
     } else if (windowWidth >= 1024 && windowWidth < 1440) {
-      // Laptop
       return {
         velocity: speedConfig.laptop,
         numCopies: copiesConfig.laptop,
@@ -140,9 +150,9 @@ export default function Hero() {
         fontSize: fontSizeConfig.laptop,
         emojiFontSize: emojiFontSizeConfig.laptop,
         emojiSize: emojiSizeConfig.laptop,
+        emojiContent: getEmojiContent(),
       };
     } else {
-      // Desktop
       return {
         velocity: speedConfig.desktop,
         numCopies: copiesConfig.desktop,
@@ -150,6 +160,7 @@ export default function Hero() {
         fontSize: fontSizeConfig.desktop,
         emojiFontSize: emojiFontSizeConfig.desktop,
         emojiSize: emojiSizeConfig.desktop,
+        emojiContent: getEmojiContent(),
       };
     }
   };
@@ -161,11 +172,11 @@ export default function Hero() {
     fontSize,
     emojiFontSize,
     emojiSize,
+    emojiContent,
   } = getResponsiveValues();
 
   return (
     <div className="relative min-h-screen tracking-tighter">
-      {/* Left Sidebar - Scrolling Up */}
       <ScrollVelocity
         texts={[scrollingText]}
         velocity={velocity}
@@ -175,7 +186,6 @@ export default function Hero() {
         scrollerClassName="text-[#ebebeb00] leading-none text-center whitespace-nowrap tracking-tighter text-gradient"
       />
 
-      {/* Right Sidebar - Scrolling Down */}
       <ScrollVelocity
         texts={[scrollingText]}
         velocity={velocity}
@@ -185,23 +195,19 @@ export default function Hero() {
         scrollerClassName="text-[#ebebeb00] leading-none text-center whitespace-nowrap tracking-tight text-gradient"
       />
 
-      {/* Main content */}
       <div className="h-screen w-full flex items-center">
         <div
-          className="font-black uppercase leading-none text-black text-start" // Added text-start here
+          className="font-black uppercase leading-none text-[#393e49] text-start"
           style={{
             paddingLeft: paddingLeft,
             fontSize: fontSize,
-            lineHeight: 1, // Changed to 1 for consistent line height
-            margin: 0, // Remove default margins
+            lineHeight: 1,
+            margin: 0,
             paddingTop: 0,
             paddingBottom: 0,
           }}
         >
-          {/* First line with Shuffle */}
           <div className="mb-0" style={{ lineHeight: 1 }}>
-            {" "}
-            {/* Changed mb-2 to mb-0 */}
             <Shuffle
               text="WE CREATE"
               {...shuffleConfig}
@@ -212,22 +218,19 @@ export default function Hero() {
                 lineHeight: "inherit",
                 display: "block",
                 textAlign: "start",
-                margin: 0, // Add this
-                padding: 0, // Add this
+                margin: 0,
+                padding: 0,
               }}
-              className="font-black uppercase text-start leading-none" // Added leading-none
+              className="font-black uppercase text-start leading-none"
             />
           </div>
 
-          {/* Second line with emoji and Shuffle */}
           <div
             className="flex items-center gap-0 mb-0"
             style={{ lineHeight: 1 }}
           >
-            {" "}
-            {/* Changed mb-2 to mb-0 */}
             <span
-              className="bg-amber-400 text-white mr-4 font-light flex items-center justify-center rounded-2xl text-start leading-none" // Added leading-none
+              className="bg-amber-400 text-white mr-4 font-light flex items-center justify-center rounded-2xl text-start leading-none"
               style={{
                 fontSize: emojiFontSize,
                 width: emojiSize.width,
@@ -235,7 +238,7 @@ export default function Hero() {
                 lineHeight: 1,
               }}
             >
-              (●'◡'●)
+              {emojiContent}
             </span>
             <Shuffle
               text="EYE OPENING"
@@ -247,14 +250,13 @@ export default function Hero() {
                 lineHeight: "inherit",
                 display: "inline-block",
                 textAlign: "start",
-                margin: 0, // Add this
-                padding: 0, // Add this
+                margin: 0,
+                padding: 0,
               }}
-              className="font-black uppercase text-start leading-none" // Added leading-none
+              className="font-black uppercase text-start leading-none"
             />
           </div>
 
-          {/* Third line with Shuffle */}
           <div style={{ lineHeight: 1 }}>
             <Shuffle
               text="PRESENTATIONS"
@@ -266,10 +268,10 @@ export default function Hero() {
                 lineHeight: "inherit",
                 display: "block",
                 textAlign: "start",
-                margin: 0, // Add this
-                padding: 0, // Add this
+                margin: 0,
+                padding: 0,
               }}
-              className="font-black uppercase text-start leading-none" // Added leading-none
+              className="font-black uppercase text-start leading-none"
             />
           </div>
         </div>

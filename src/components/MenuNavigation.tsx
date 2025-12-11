@@ -468,7 +468,7 @@ export default function MenuNavigation() {
         >
           <div
             ref={menuLogoRef}
-            className="menu-logo-icon p-5 cursor-pointer transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:translate-x-[5px]"
+            className="menu-logo-icon p-5 cursor-pointer transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-110 text-white"
             onClick={openMenu}
             role="button"
             aria-label="Open menu"
