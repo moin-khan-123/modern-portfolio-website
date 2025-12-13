@@ -1,10 +1,16 @@
 // components/Hero.tsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import gsap from "gsap";
 import ScrollVelocity from "./ScrollVelocity";
 import Shuffle from "./Shuffle";
 
 export default function Hero() {
   const [windowWidth, setWindowWidth] = useState<number | null>(null);
+  const svgRef1 = useRef<SVGSVGElement>(null);
+  const svgRef2 = useRef<SVGSVGElement>(null);
+  const animationRef1 = useRef<gsap.core.Tween | null>(null);
+  const animationRef2 = useRef<gsap.core.Tween | null>(null);
+  const wheelTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // This effect runs once on component mount and updates when window resizes
   // It captures the current window width for responsive calculations
@@ -85,7 +91,7 @@ export default function Hero() {
   // Adjusting these changes the horizontal position of entire text section
   const paddingLeftConfig = {
     smallPhone: "1rem", // < 400px - Minimal padding for tiny screens
-    mobile: "2rem", // 400px - 640px - Moderate padding
+    mobile: "1.2rem", // 400px - 640px - Moderate padding
     tablet: "7rem", // 640px - 1024px - More padding for tablets
     laptop: "8rem", // 1024px - 1440px - Standard desktop padding
     desktop: "16rem", // >= 1440px - Large padding for wide screens
@@ -268,7 +274,7 @@ export default function Hero() {
     }
   };
 
-  // Destructure all responsive values for cleaner code
+  // Get responsive values
   const {
     velocity,
     numCopies,
@@ -283,77 +289,79 @@ export default function Hero() {
     secondSvgPosition,
   } = getResponsiveValues();
 
-  // ROTATING SVG COMPONENT
-  // This creates the spinning SVG with configurable size and speed
-  // What happens if you change the rotation speed online:
-  // - Lower values (2-3): SVG spins very fast, energetic feel
-  // - Higher values (8-10): SVG spins slowly, elegant feel
-  // - Same speed for both: Creates visual harmony
-  const RotatingSVG = ({
-    className = "",
-    style = {},
-  }: {
-    className?: string;
-    style?: React.CSSProperties;
-  }) => (
-    <svg
-      style={{
-        animation: `spin ${rotationSpeed}s linear infinite`,
-        ...style,
-      }}
-      className={className}
-      viewBox="0 0 60 60"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {/* CSS Animation for Rotation */}
-      <style>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
+  // Initialize GSAP animations for SVG rotation
+  useEffect(() => {
+    if (svgRef1.current && svgRef2.current) {
+      // Create rotation animations
+      animationRef1.current = gsap.to(svgRef1.current, {
+        rotation: 360,
+        duration: rotationSpeed,
+        ease: "linear",
+        repeat: -1,
+      });
+
+      animationRef2.current = gsap.to(svgRef2.current, {
+        rotation: 360,
+        duration: rotationSpeed,
+        ease: "linear",
+        repeat: -1,
+      });
+    }
+    // Clean up animations on unmount
+    return () => {
+      if (animationRef1.current) animationRef1.current.kill();
+      if (animationRef2.current) animationRef2.current.kill();
+    };
+  }, [rotationSpeed]);
+
+  // Handle scroll wheel event to speed up rotation
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      // Speed up both SVGs to double speed
+      if (animationRef1.current) {
+        animationRef1.current.timeScale(4);
+      }
+      if (animationRef2.current) {
+        animationRef2.current.timeScale(4);
+      }
+
+      // Clear previous timeout
+      if (wheelTimeoutRef.current) {
+        clearTimeout(wheelTimeoutRef.current);
+      }
+
+      // Reset to normal speed after 1 second of no scrolling
+      wheelTimeoutRef.current = setTimeout(() => {
+        if (animationRef1.current) {
+          animationRef1.current.timeScale(1);
         }
-        /* Reduced motion preference */
-        @media (prefers-reduced-motion: reduce) {
-          svg {
-            animation: none !important;
-          }
+        if (animationRef2.current) {
+          animationRef2.current.timeScale(1);
         }
-      `}</style>
-      {/* SVG Paths - All paths form the sunburst/compass design */}
-      <path
-        d="M29.9744 20.88C26.804 20.88 24.21 18.288 24.21 15.12V0H35.6909V15.12C35.7389 18.288 33.1929 20.88 29.9744 20.88Z"
-        fill="#ffb900"
-      />
-      <path
-        d="M29.9744 39.1201C26.804 39.1201 24.21 41.7121 24.21 44.8801V60.0001H35.6909V44.8801C35.7389 41.6641 33.1929 39.1201 29.9744 39.1201Z"
-        fill="#ffb900"
-      />
-      <path
-        d="M23.5357 23.5677C21.2779 25.8237 17.6751 25.8237 15.4174 23.5677L4.70508 12.8637L12.8234 4.75171L23.5357 15.4557C25.7934 17.6637 25.7934 21.3117 23.5357 23.5677Z"
-        fill="#ffb900"
-      />
-      <path
-        d="M36.458 36.4315C34.2002 38.6875 34.2002 42.2875 36.458 44.5435L47.1703 55.2475L55.2886 47.1355L44.5763 36.4315C42.3185 34.1755 38.6677 34.1755 36.458 36.4315Z"
-        fill="#ffb900"
-      />
-      <path
-        d="M20.8962 29.9996C20.8962 33.1676 18.3022 35.7596 15.1317 35.7596H0V24.2876H15.1317C18.3022 24.2396 20.8962 26.8316 20.8962 29.9996Z"
-        fill="#ffb900"
-      />
-      <path
-        d="M39.1035 29.9996C39.1035 33.1676 41.6975 35.7596 44.868 35.7596H59.9997V24.2876H44.868C41.6975 24.2396 39.1035 26.8316 39.1035 29.9996Z"
-        fill="#ffb900"
-      />
-      <path
-        d="M23.5357 36.4315C25.7934 38.6875 25.7934 42.2875 23.5357 44.5435L12.8234 55.2475L4.70508 47.1355L15.4174 36.4315C17.6751 34.1755 21.2779 34.1755 23.5357 36.4315Z"
-        fill="#ffb900"
-      />
-      <path
-        d="M36.458 23.5677C38.7157 25.8237 42.3185 25.8237 44.5763 23.5677L55.2886 12.8637L47.1703 4.75171L36.458 15.4557C34.2002 17.6637 34.2002 21.3117 36.458 23.5677Z"
-        fill="#ffb900"
-      />
-    </svg>
-  );
+      }, 1000);
+    };
+
+    // Add wheel event listener
+    window.addEventListener('wheel', handleWheel, { passive: true });
+
+    // Clean up event listener
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      if (wheelTimeoutRef.current) {
+        clearTimeout(wheelTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Handle hover events for SVG speed control
+  const handleSvgHover = (svgNumber: number, isHovering: boolean) => {
+    if (svgNumber === 1 && animationRef1.current) {
+      animationRef1.current.timeScale(isHovering ? 4 : 1);
+    }
+    if (svgNumber === 2 && animationRef2.current) {
+      animationRef2.current.timeScale(isHovering ? 4 : 1);
+    }
+  };
 
   return (
     <div className="relative min-h-screen tracking-tighter overflow-hidden">
@@ -419,13 +427,53 @@ export default function Hero() {
                 width: svgSize.width,
                 height: svgSize.height,
               }}
+              onMouseEnter={() => handleSvgHover(1, true)}
+              onMouseLeave={() => handleSvgHover(1, false)}
             >
-              <RotatingSVG
+              <svg
+                ref={svgRef1}
                 style={{
                   width: svgSize.width,
                   height: svgSize.height,
                 }}
-              />
+                viewBox="0 0 60 60"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                {/* SVG Paths - All paths form the sunburst/compass design */}
+                <path
+                  d="M29.9744 20.88C26.804 20.88 24.21 18.288 24.21 15.12V0H35.6909V15.12C35.7389 18.288 33.1929 20.88 29.9744 20.88Z"
+                  fill="#ffb900"
+                />
+                <path
+                  d="M29.9744 39.1201C26.804 39.1201 24.21 41.7121 24.21 44.8801V60.0001H35.6909V44.8801C35.7389 41.6641 33.1929 39.1201 29.9744 39.1201Z"
+                  fill="#ffb900"
+                />
+                <path
+                  d="M23.5357 23.5677C21.2779 25.8237 17.6751 25.8237 15.4174 23.5677L4.70508 12.8637L12.8234 4.75171L23.5357 15.4557C25.7934 17.6637 25.7934 21.3117 23.5357 23.5677Z"
+                  fill="#ffb900"
+                />
+                <path
+                  d="M36.458 36.4315C34.2002 38.6875 34.2002 42.2875 36.458 44.5435L47.1703 55.2475L55.2886 47.1355L44.5763 36.4315C42.3185 34.1755 38.6677 34.1755 36.458 36.4315Z"
+                  fill="#ffb900"
+                />
+                <path
+                  d="M20.8962 29.9996C20.8962 33.1676 18.3022 35.7596 15.1317 35.7596H0V24.2876H15.1317C18.3022 24.2396 20.8962 26.8316 20.8962 29.9996Z"
+                  fill="#ffb900"
+                />
+                <path
+                  d="M39.1035 29.9996C39.1035 33.1676 41.6975 35.7596 44.868 35.7596H59.9997V24.2876H44.868C41.6975 24.2396 39.1035 26.8316 39.1035 29.9996Z"
+                  fill="#ffb900"
+                />
+                <path
+                  d="M23.5357 36.4315C25.7934 38.6875 25.7934 42.2875 23.5357 44.5435L12.8234 55.2475L4.70508 47.1355L15.4174 36.4315C17.6751 34.1755 21.2779 34.1755 23.5357 36.4315Z"
+                  fill="#ffb900"
+                />
+                <path
+                  d="M36.458 23.5677C38.7157 25.8237 42.3185 25.8237 44.5763 23.5677L55.2886 12.8637L47.1703 4.75171L36.458 15.4557C34.2002 17.6637 34.2002 21.3117 36.458 23.5677Z"
+                  fill="#ffb900"
+                />
+              </svg>
             </div>
 
             {/* "CREATE" Text with Shuffle Animation */}
@@ -507,13 +555,53 @@ export default function Hero() {
                 width: svgSize.width * 1.25, // 25% larger than first SVG
                 height: svgSize.height * 1.25,
               }}
+              onMouseEnter={() => handleSvgHover(2, true)}
+              onMouseLeave={() => handleSvgHover(2, false)}
             >
-              <RotatingSVG
+              <svg
+                ref={svgRef2}
                 style={{
                   width: svgSize.width * 1.25,
                   height: svgSize.height * 1.25,
                 }}
-              />
+                viewBox="0 0 60 60"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                {/* SVG Paths - All paths form the sunburst/compass design */}
+                <path
+                  d="M29.9744 20.88C26.804 20.88 24.21 18.288 24.21 15.12V0H35.6909V15.12C35.7389 18.288 33.1929 20.88 29.9744 20.88Z"
+                  fill="#ffb900"
+                />
+                <path
+                  d="M29.9744 39.1201C26.804 39.1201 24.21 41.7121 24.21 44.8801V60.0001H35.6909V44.8801C35.7389 41.6641 33.1929 39.1201 29.9744 39.1201Z"
+                  fill="#ffb900"
+                />
+                <path
+                  d="M23.5357 23.5677C21.2779 25.8237 17.6751 25.8237 15.4174 23.5677L4.70508 12.8637L12.8234 4.75171L23.5357 15.4557C25.7934 17.6637 25.7934 21.3117 23.5357 23.5677Z"
+                  fill="#ffb900"
+                />
+                <path
+                  d="M36.458 36.4315C34.2002 38.6875 34.2002 42.2875 36.458 44.5435L47.1703 55.2475L55.2886 47.1355L44.5763 36.4315C42.3185 34.1755 38.6677 34.1755 36.458 36.4315Z"
+                  fill="#ffb900"
+                />
+                <path
+                  d="M20.8962 29.9996C20.8962 33.1676 18.3022 35.7596 15.1317 35.7596H0V24.2876H15.1317C18.3022 24.2396 20.8962 26.8316 20.8962 29.9996Z"
+                  fill="#ffb900"
+                />
+                <path
+                  d="M39.1035 29.9996C39.1035 33.1676 41.6975 35.7596 44.868 35.7596H59.9997V24.2876H44.868C41.6975 24.2396 39.1035 26.8316 39.1035 29.9996Z"
+                  fill="#ffb900"
+                />
+                <path
+                  d="M23.5357 36.4315C25.7934 38.6875 25.7934 42.2875 23.5357 44.5435L12.8234 55.2475L4.70508 47.1355L15.4174 36.4315C17.6751 34.1755 21.2779 34.1755 23.5357 36.4315Z"
+                  fill="#ffb900"
+                />
+                <path
+                  d="M36.458 23.5677C38.7157 25.8237 42.3185 25.8237 44.5763 23.5677L55.2886 12.8637L47.1703 4.75171L36.458 15.4557C34.2002 17.6637 34.2002 21.3117 36.458 23.5677Z"
+                  fill="#ffb900"
+                />
+              </svg>
             </div>
           </div>
         </div>
