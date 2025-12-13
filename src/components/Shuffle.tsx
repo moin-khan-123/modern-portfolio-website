@@ -188,7 +188,6 @@ const Shuffle: React.FC<ShuffleProps> = ({
         if (!parent) return;
 
         // Get character dimensions
-        const originalDisplay = getComputedStyle(ch).display;
         const originalLineHeight = getComputedStyle(ch).lineHeight;
         const originalHeight = getComputedStyle(ch).height;
 
@@ -278,7 +277,7 @@ const Shuffle: React.FC<ShuffleProps> = ({
           force3D: true,
           lineHeight: originalLineHeight,
         });
-        if (colorFrom) (inner.style as any).color = colorFrom;
+        if (colorFrom) inner.style.color = colorFrom;
 
         inner.setAttribute("data-final-x", String(finalX));
         inner.setAttribute("data-start-x", String(startX));
@@ -536,7 +535,7 @@ const Shuffle: React.FC<ShuffleProps> = ({
   );
 
   const baseTw =
-    "inline-block whitespace-normal break-words will-change-transform uppercase leading-none"; // Removed text-2xl
+    "inline-block whitespace-normal break-words will-change-transform uppercase leading-none";
   const userHasFont = useMemo(
     () => className && /font[-[]/i.test(className),
     [className]
@@ -552,9 +551,9 @@ const Shuffle: React.FC<ShuffleProps> = ({
       textAlign,
       ...fallbackFont,
       ...style,
-      lineHeight: 1, // Force line height to 1
-      margin: 0, // Remove any margins
-      padding: 0, // Remove any padding
+      lineHeight: 1,
+      margin: 0,
+      padding: 0,
     }),
     [textAlign, fallbackFont, style]
   );
@@ -563,11 +562,22 @@ const Shuffle: React.FC<ShuffleProps> = ({
     () => `${baseTw} ${ready ? "visible" : "invisible"} ${className}`.trim(),
     [baseTw, ready, className]
   );
+  
   const Tag = (tag || "p") as keyof JSX.IntrinsicElements;
 
+  // FIX: Properly handle the ref type
   return React.createElement(
     Tag,
-    { ref: ref as any, className: classes, style: commonStyle },
+    {
+      // This is the safest way to handle the ref without using 'any'
+      ref: (el: HTMLElement | null) => {
+        if (el) {
+          (ref as React.MutableRefObject<HTMLElement | null>).current = el;
+        }
+      },
+      className: classes,
+      style: commonStyle,
+    },
     text
   );
 };
